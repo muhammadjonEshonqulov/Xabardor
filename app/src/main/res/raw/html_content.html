@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+    <head>
+        <meta charset="utf-8"/>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+        <!-- Apple devices fullscreen -->
+        <meta name="apple-mobile-web-app-capable" content="yes"/>
+        <!-- Apple devices fullscreen -->
+        <meta names="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="viewport" content="width=device-width">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge;chrome=1"/>
+        <title></title>
+        <style type="text/css">
+        @font-face {
+            font-family: Museo Sans Cyrl\ 500;
+            src: url(http://apps.kun.uz/static/webfonts/MuseoSans/MuseoSansCyrl-500.eot);
+            src: local("http://apps.kun.uz/static/webfonts/MuseoSans/MuseoSansCyrl-500"), url(http://apps.kun.uz/static/webfonts/MuseoSans/MuseoSansCyrl-500.eot?#iefix) format("embedded-opentype"), url(http://apps.kun.uz/static/webfonts/MuseoSans/MuseoSansCyrl-500.woff) format("woff"), url(http://apps.kun.uz/static/webfonts/MuseoSans/MuseoSansCyrl-500.ttf) format("truetype");
+            font-weight: 400;
+            font-style: normal
+        }
+
+        @font-face {
+            font-family: Museo Sans Cyrl\ 300;
+            src: url(http://apps.kun.uz/static/webfonts/MuseoSans/MuseoSansCyrl-300Italic.eot);
+            src: local("http://apps.kun.uz/static/webfonts/MuseoSans/MuseoSansCyrl-300Italic"), url(http://apps.kun.uz/static/webfonts/MuseoSans/MuseoSansCyrl-300Italic.eot?#iefix) format("embedded-opentype"), url(http://apps.kun.uz/static/webfonts/MuseoSans/MuseoSansCyrl-300Italic.woff) format("woff"), url(http://apps.kun.uz/static/webfonts/MuseoSans/MuseoSansCyrl-300Italic.ttf) format("truetype");
+            font-weight: 300;
+            font-style: italic
+        }
+
+        @font-face {
+            font-family: Museo Sans Cyrl\ 700;
+            src: url(http://apps.kun.uz/static/webfonts/MuseoSans/MuseoSansCyrl-700.eot);
+            src: local("http://apps.kun.uz/static/webfonts/MuseoSans/MuseoSansCyrl-700"), url(http://apps.kun.uz/static/webfonts/MuseoSans/MuseoSansCyrl-700.eot?#iefix) format("embedded-opentype"), url(http://apps.kun.uz/static/webfonts/MuseoSans/MuseoSansCyrl-700.woff) format("woff"), url(http://apps.kun.uz/static/webfonts/MuseoSans/MuseoSansCyrl-700.ttf) format("truetype");
+            font-weight: 400;
+            font-style: normal
+        }
+
+        @font-face {
+            font-family: Museo Sans Cyrl\ 300;
+            src: url(http://apps.kun.uz/static/webfonts/MuseoSans/MuseoSansCyrl-300.eot);
+            src: local("http://apps.kun.uz/static/webfonts/MuseoSans/MuseoSansCyrl-300"), url(http://apps.kun.uz/static/webfonts/MuseoSans/MuseoSansCyrl-300.eot?#iefix) format("embedded-opentype"), url(http://apps.kun.uz/static/webfonts/MuseoSans/MuseoSansCyrl-300.woff) format("woff"), url(http://apps.kun.uz/static/webfonts/MuseoSans/MuseoSansCyrl-300.ttf) format("truetype");
+            font-weight: 300;
+            font-style: normal
+        }
+
+        @font-face {
+            font-family: Museo Sans Cyrl\ 100;
+            src: url(http://apps.kun.uz/static/webfonts/MuseoSans/MuseoSansCyrl-100.eot);
+            src: local("http://apps.kun.uz/static/webfonts/MuseoSans/MuseoSansCyrl-100"), url(http://apps.kun.uz/static/webfonts/MuseoSans/MuseoSansCyrl-100.eot?#iefix) format("embedded-opentype"), url(http://apps.kun.uz/static/webfonts/MuseoSans/MuseoSansCyrl-100.woff) format("woff"), url(http://apps.kun.uz/static/webfonts/MuseoSans/MuseoSansCyrl-100.ttf) format("truetype");
+            font-weight: 300;
+            font-style: normal
+        }
+
+        @font-face {
+            font-family: Museo Sans Cyrl\ 100;
+            src: url(http://apps.kun.uz/static/webfonts/MuseoSans/MuseoSansCyrl-100Italic.eot);
+            src: local("http://apps.kun.uz/static/webfonts/MuseoSans/MuseoSansCyrl-100Italic"), url(http://apps.kun.uz/static/webfonts/MuseoSans/MuseoSansCyrl-100Italic.eot?#iefix) format("embedded-opentype"), url(http://apps.kun.uz/static/webfonts/MuseoSans/MuseoSansCyrl-100Italic.woff) format("woff"), url(http://apps.kun.uz/static/webfonts/MuseoSans/MuseoSansCyrl-100Italic.ttf) format("truetype");
+            font-weight: 300;
+            font-style: italic
+        }
+
+        @font-face {
+            font-family: Museo Sans Cyrl\ 900;
+            src: url(http://apps.kun.uz/static/webfonts/MuseoSans/MuseoSansCyrl-900Italic.eot);
+            src: local("http://apps.kun.uz/static/webfonts/MuseoSans/Museo Sans Cyrl 900 Italic"), local("MuseoSansCyrl-900Italic"), url(http://apps.kun.uz/static/webfonts/MuseoSans/MuseoSansCyrl-900Italic.eot?#iefix) format("embedded-opentype"), url(http://apps.kun.uz/static/webfonts/MuseoSans/MuseoSansCyrl-900Italic.woff) format("woff"), url(http://apps.kun.uz/static/webfonts/MuseoSans/MuseoSansCyrl-900Italic.ttf) format("truetype");
+            font-weight: 700;
+            font-style: italic
+        }
+
+        body {
+            font-size: 14px;
+            line-height: 1.25;
+            font-family: Museo Sans Cyrl\ 300;
+            /*font-family: Arial, Helvetica, sans-serif;color: #2c2c2c;*/
+        }
+
+        .post-img img {
+            width: 100%;
+            float: left;
+        }
+
+        .post-title {
+            margin-bottom: 10px;
+            float: left;
+            width: 100%;
+        }
+
+        .post p {
+            width: 100%;
+            color: #2C2C2C;
+            margin-top: 0;
+        }
+
+        .post-details {
+            margin-bottom: 0;
+        }
+
+        .post-details .post-title {
+            margin: 0 0 16px 0;
+        }
+
+        .post-details .post-img {
+            margin-bottom: 20px;
+        }
+
+        .post-details .data {
+            margin-bottom: 16px;
+        }
+
+        .post-details .data a {
+            margin-right: 16px;
+        }
+
+        .post-details p {
+            font-size: 15px;
+            line-height: 1.6em;
+            margin-bottom: 1rem;
+        }
+
+        .post-details a.source-link {
+            color: #ee4d4d;
+        }
+
+        .post-details a.source-link:hover {
+            text-decoration: underline;
+        }
+
+        .day-mode {
+            background-color: #ffffff;
+        }
+
+        .night-mode {
+            background-color: #2b2b2b;
+        }
+
+        .day-mode p {
+            color: #000000 !important;
+        }
+
+        .night-mode p {
+            color: #ffffff !important;
+        }
+
+        .post-body img {
+            display: block;
+            max-width: 100%;
+            height: auto;
+        }
+
+        .post-body a {
+            text-decoration: none;
+        }
+
+        .embed-wrapper {
+            position: relative;
+            display: block;
+            width: 100%;
+            padding: 0;
+            overflow: hidden
+        }
+
+        .embed-wrapper:before {
+            display: block;
+            content: "";
+            padding-top: 56.25%
+        }
+
+        .embed-wrapper embed,
+        .embed-wrapper iframe,
+        .embed-wrapper object,
+        .embed-wrapper video {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0
+        }
+
+        iframe {
+            display: block;
+            max-width: 100%;
+        }
+
+        .post-details iframe {
+            width: 100%;
+            max-width: 100%;
+        }
+
+        figure {
+            margin: 0;
+        }
+
+        figure img {
+            display: block;
+            height: auto;
+            width: 100%;
+            margin: auto;
+            max-width: 100%;
+        }
+
+        figcaption {
+            background: #f4f4f4 none repeat scroll 0 0;
+            color: #9c9c9c;
+            font-size: 11px;
+            font-style: normal;
+            padding: 3px;
+            text-align: center;
+        }
+
+        div {
+            display: block;
+            clear: both;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            padding-left: 1em;
+            display: block;
+            clear: both;
+        }
+
+        ul li {
+            margin-bottom: 15px;
+            position: relative;
+            padding-left: 25px;
+        }
+
+        ul li:before {
+            content: '';
+            position: absolute;
+            top: 7px;
+            left: 0;
+            width: 10px;
+            height: 10px;
+            background-color: #184FA8;
+            border-radius: 50%;
+        }
+
+        </style>
+    </head>
+
+    <body class="day-mode">
+        <div class="post post-details">
+            <div class="post-body">
+                <p>Қирғизистоннинг собиқ президенти Алмазбек Атамбоев Қўй-Тош қишлоғидаги тарафдорлари олдига чиқди ва
+                    журналистларнинг саволларига жавоб берди.
+                </p>
+                <p>Унинг сўзларига кўра, у хатолари учун жавоб беришга тайёр.&nbsp;&nbsp;</p>
+                <p style="text-align:center">
+                    <img alt="" height="450" src="http://media.xabardor.uz/source/1/7h9MbpAyUlGHI0mt360oRJmn5enpvlYV.jpg"
+                         width="800"/>
+                </p>
+                <p>&laquo;Аммо менга аниқ айблов қўйинглар, мен нима қилдим? Масалан, матбуот. Ҳа, матбуотга қарши даъво
+                    киритганман, аммо менга туҳмат қилишларига қарши эдим. Мана, Дача Суудаги самолёт ҳақида (гап 2017
+                    йилда Дача Суудаги уйлар устига қулаб тушган самолётдаги юклар ҳақида бормоқда) олтинли бриллиантлар
+                    менда бўлганлигини айтишганди, энди эса Текебаев олтинли чойнаклар бўлганлигини айтмоқда. Туҳмат
+                    қилмаслик керак. Бирорта ҳам журналист менга бир тийин тўламаган. Бошқаларга тўлаган. Аммо бу
+                    туҳматга таъсир кўрсатмади. Норин Айип ҳалигача туҳмат қилиб келади. Мен хатоларим учун доим жавоб
+                    бераман, чунки ҳалол инсонман&raquo;, &mdash; деди Алмазбек Атамбоев.
+                </p>
+                <p style="text-align:center">
+                    <img alt="" height="600" src="https://storage.kun.uz/source/4/zo6fWtscRfP4wZGQrBoiTpDbvzbGbGHW.jpg"
+                         width="800"/>
+                </p>
+                <p>У мамлакатдан ҳеч қаерга чиқиб кетмоқчи эмаслигини қўшиб қўйди.</p>
+                <p>Журналистлар собиқ президентдан қайси сиёсатчилар уни қўллаб-қувватлаётганини сўрашди. У агарда
+                    исмларини айтадиган бўлса, уларни қамаб қўйишлари мумкинлигини айтиб, бу саволга жавоб беришни
+                    истамади.
+                </p>
+                <p style="text-align:center">
+                    <img alt="" height="450"
+                         src="http://media.xabardor.uz/source/1/7h9MbpAyUlGHI0mt360oRJmn5enpvlYV.jpg" width="800"/>
+                </p>
+                <p>&laquo;Омурбек Токтогулович Бабанов менга қўнғироқ қилмади. Кўпчилик қўнғироқ қиляпти,
+                    қўллаб-қувватлаяпти. Аммо ҳукумат уларни қамоқ билан қўрқитиб қўйган. Одамларимиз, элитамиз бунга
+                    тайёр эмаслиги кўриниб қолди. Оддий одамлардан фарқли равишда уларда қўрқув бор. Одамларни ўлдирган
+                    Бакиевлардан фарқли ўлароқ, ҳозирги ҳукумат ўзларига ёқмаган кишиларни қамоққа тиқмоқда. Ўзларига
+                    ёққанларни эса супер коррупционер бўлса ҳам кўтаришмоқда. Аммо бизнинг мамлакатимизда бу узоқ давом
+                    этиши мумкин эмас&raquo;, &mdash; деди Алмазбек Атамбоев.
+                </p>
+                <div class="embed-wrapper" style="text-align:center">
+                    <iframe allow=";" allowfullscreen="" frameborder="0" height="360"
+                            src="https://www.youtube.com/embed/-riZDnnFOCY" width="640"></iframe>
+                </div>
+                <p>Эслатиб ўтамиз, Қирғизистон парламенти Алмазбек Атамбоевни дахлсизликдан маҳрум қилди. Собиқ
+                    президентга нисбатан бешта айблов илгари сурилмоқда.
+                </p>
+            </div>
+        </div>
+        <script type="text/javascript">
+        var current_image = null;
+        var images = document.querySelectorAll('img');
+        images.forEach(function(image) {
+            image.addEventListener('click', function(event) {
+                current_image = event.target.src;
+                window.location.href = current_image;
+            });
+        });
+
+        </script>
+        <!-- START -->
+        <img src="https://kun.uz/static/logo.svg" width=0 height=0 border=0/>
+        <!-- FINISH  -->
+    </body>
+
+</html>

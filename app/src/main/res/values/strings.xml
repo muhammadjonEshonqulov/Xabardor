@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">Xabardor</string>
+    <string name="related_newses">Mavzuga doir</string>
+    <string name="tags">Teglar</string>
+    <string name="about_us">Biz haqimizda</string>
+    <string name="contact_us">Biz bilan aloqa</string>
+    <string name="newslist_is_empty">Xarbarlar yo`q</string>
+    <string name="favourites">Tanlangan maqolalar</string>
+    <string name="actual_theme">Dolzarb mavzu</string>
+
+    <string name="all">Barchasi</string>
+    <string name="search">Qidirish</string>
+</resources>
