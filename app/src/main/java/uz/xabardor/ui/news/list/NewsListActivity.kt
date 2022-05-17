@@ -1,5 +1,6 @@
 package uz.xabardor.ui.news.list
 
+import android.util.Log
 import android.view.View
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
@@ -7,6 +8,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import uz.xabardor.R
+import uz.xabardor.extensions.language.Uzbek
 import uz.xabardor.extensions.openBrowser
 import uz.xabardor.extensions.openNewsActivity
 import uz.xabardor.extensions.openNewsListActivity
@@ -24,6 +26,8 @@ class NewsListActivity : BaseActivity(), NewsListView, OnTagClickListener,
 
     @InjectPresenter
     lateinit var presenter: NewsListPresenter
+    var next:Long? = null
+    var total:Long? = null
 
     @ProvidePresenter
     fun providerPresenter() = NewsListPresenter().apply {
@@ -43,7 +47,11 @@ class NewsListActivity : BaseActivity(), NewsListView, OnTagClickListener,
 
     override fun setupToolbar() {
         tag?.let {
-            toolBarTitleTextView?.setText(it.title)
+            if (languageManager.currentLanguage.id == Uzbek().id){
+                toolBarTitleTextView?.setText(it.title)
+            } else {
+                toolBarTitleTextView?.setText(it.title_cyrl)
+            }
         }
 
         searchText?.let {
@@ -59,6 +67,7 @@ class NewsListActivity : BaseActivity(), NewsListView, OnTagClickListener,
 
 
         newsListAdapter = NewsListAdapter(recyclerView)
+        newsListAdapter.language = languageManager.currentLanguage
         newsListAdapter.onGroupRecyclerViewItemClickListener = this
         newsListAdapter.onTagClickListener = this
         newsListAdapter.onBannerOpenClickListener = this
@@ -90,7 +99,11 @@ class NewsListActivity : BaseActivity(), NewsListView, OnTagClickListener,
     }
 
     override fun onBottomScrolled(recyclerView: RecyclerView) {
-        presenter.getNewsList()
+        if (next != null && total != null){
+            if (total!! >= next!!){
+                presenter.getNewsList()
+            }
+        }
     }
 
 
@@ -106,7 +119,12 @@ class NewsListActivity : BaseActivity(), NewsListView, OnTagClickListener,
         swipeRefreshLayout.isRefreshing = false
     }
 
-    override fun onSuccessNewsList() {
+    override fun onSuccessNewsList(next: Long?, totalPages: Long?) {
+
+        total = totalPages
+
+        this.next = next
+
         swipeRefreshLayout.isRefreshing = false
 //        newsListAdapter.onSuccess(presenter.newsList)
 
@@ -140,8 +158,8 @@ class NewsListActivity : BaseActivity(), NewsListView, OnTagClickListener,
                 items = presenter.newsList.filterIndexed { index, news -> 4 < index }
             )
         )
-
-
+        newsListAdapter.adsenseTop = presenter.adsenseTopList
+        newsListAdapter.adsenseCenter = presenter.adsenseCenterList
         newsListAdapter.onSuccess(groups)
 
 

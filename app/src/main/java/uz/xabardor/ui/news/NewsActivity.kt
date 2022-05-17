@@ -1,13 +1,11 @@
 package uz.xabardor.ui.news
 
 import android.content.Intent
+import android.text.Html
 import android.view.View
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.ProgressBar
-import android.widget.TextView
+import android.widget.*
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.widget.NestedScrollView
 import androidx.recyclerview.widget.RecyclerView
@@ -19,6 +17,9 @@ import de.hdodenhof.circleimageview.CircleImageView
 import moxy.presenter.ProvidePresenter
 import uz.xabardor.R
 import uz.xabardor.extensions.*
+import uz.xabardor.extensions.language.Krill
+import uz.xabardor.extensions.language.Uzbek
+import uz.xabardor.rest.models.Adsense
 import uz.xabardor.rest.models.news.News
 import uz.xabardor.rest.services.BaseService
 import uz.xabardor.ui.base.BaseActivity
@@ -42,14 +43,19 @@ class NewsActivity : BaseActivity(), NewsView, OnItemClickListener<News>, TagVie
     lateinit var relatedRecyclerView: RecyclerView
     lateinit var relatedAdapter: RelatedAdapter
 
-    lateinit var webView: WebView
+//    lateinit var webView: WebView
 
     lateinit var tagContainerLayout: TagContainerLayout
 
 
     lateinit var titleTextView: TextView
+    lateinit var messageTextView: TextView
     lateinit var dateTextView: TextView
     lateinit var countViewTextView: TextView
+
+    lateinit var textViewAdsense : TextView
+    lateinit var imageViewAdsense : ImageView
+    lateinit var adsenseLay : RelativeLayout
 
 
     lateinit var authorLinearLayout: LinearLayout
@@ -72,26 +78,30 @@ class NewsActivity : BaseActivity(), NewsView, OnItemClickListener<News>, TagVie
     override fun onCreatedView() {
         progressBar = findViewById(R.id.progress_bar)
         scrollView = findViewById(R.id.scroll_view)
+        textViewAdsense = findViewById(R.id.adsense_text_view_title)
+        imageViewAdsense = findViewById(R.id.adsense_image_view)
+        adsenseLay = findViewById(R.id.adsense_lay)
 
         relatedRecyclerView = findViewById(R.id.recyclerview)
         relatedAdapter = RelatedAdapter(relatedRecyclerView)
+        relatedAdapter.language = languageManager.currentLanguage
         relatedAdapter.onItemClickListener = this
 
 
-        webView = findViewById(R.id.web_view)
-        webView.settings.javaScriptEnabled = true
-        webView.webViewClient = object : WebViewClient() {
-            override fun onPageFinished(view: WebView?, url: String?) {
-                super.onPageFinished(view, url)
-            }
-
-            override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
-                url?.let {
-                    openBrowser(it)
-                }
-                return true
-            }
-        }
+//        webView = findViewById(R.id.web_view)
+//        webView.settings.javaScriptEnabled = true
+//        webView.webViewClient = object : WebViewClient() {
+//            override fun onPageFinished(view: WebView?, url: String?) {
+//                super.onPageFinished(view, url)
+//            }
+//
+//            override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
+//                url?.let {
+//                    openBrowser(it)
+//                }
+//                return true
+//            }
+//        }
 
 
         authorLinearLayout = findViewById(R.id.linear_layout_author)
@@ -107,6 +117,7 @@ class NewsActivity : BaseActivity(), NewsView, OnItemClickListener<News>, TagVie
 
 
         titleTextView = findViewById(R.id.text_view_title)
+        messageTextView = findViewById(R.id.text_view_description)
         dateTextView = findViewById(R.id.text_view_date)
         countViewTextView = findViewById(R.id.text_view_count_view)
 
@@ -167,7 +178,12 @@ class NewsActivity : BaseActivity(), NewsView, OnItemClickListener<News>, TagVie
     override fun onTagClick(position: Int, text: String?) {
         text?.let { str ->
             news.tags?.find {
-                "#${it.title}" == str
+                if (languageManager.currentLanguage.id == Uzbek().id){
+                    "#${it.title}" == str
+
+                } else {
+                    "#${it.title_cyrl}" == str
+                }
             }?.let {
                 openNewsListActivity(
                         tag = it
@@ -193,13 +209,28 @@ class NewsActivity : BaseActivity(), NewsView, OnItemClickListener<News>, TagVie
     override fun onSuccessNewsDetail() {
         loadWebView()
 
-        titleTextView.setText(news.title)
-        dateTextView.setText(news.date)
-        countViewTextView.setText("${news.impressions}")
-        news.tags?.let { tags ->
-            tagContainerLayout.setTags(tags.map { "#${it.title}" })
+        if (languageManager.currentLanguage.id == Krill().id){
+            titleTextView.setText(presenter.news.title_cyrl)
+            messageTextView.setText(Html.fromHtml(presenter.news.content_cyrl))
+        } else if (languageManager.currentLanguage.id == Uzbek().id){
+            titleTextView.setText(presenter.news.title)
+            messageTextView.setText(Html.fromHtml(presenter.news.content))
         }
 
+
+        presenter.news.published?.let {
+            dateTextView.text = formatDateStr(it)
+        }
+        countViewTextView.setText("${presenter.news.views}")
+        news.tags?.let { tags ->
+            tagContainerLayout.setTags(tags.map {
+                if (languageManager.currentLanguage.id == Krill().id){
+                    "#${it.title_cyrl}"
+                } else {
+                    "#${it.title}"
+                }
+            })
+        }
 
         if (news.image.show) {
             imageLinearLayout.visibility = View.VISIBLE
@@ -248,7 +279,19 @@ class NewsActivity : BaseActivity(), NewsView, OnItemClickListener<News>, TagVie
 
     fun loadWebView() {
 
-        webView.loadUrl(BaseService.BASE_API_URL + "articles/${news.shortCode}/content", BaseService.getHeaders())
+        val glide = Glide.with(this)
+        glide.clear(imageViewAdsense)
+        glide
+            .load(presenter.adsenseTopList[0].photo)
+            .into(imageViewAdsense)
+        presenter.adsenseTopList[0].title?.let {
+            textViewAdsense.text = it
+        }
+        adsenseLay.setOnClickListener {
+            presenter.adsenseTopList[0].link?.let {
+                openBrowser(it)
+            }
+        }
     }
 
     val news: News get() = intent.getSerializableExtra(NEWS) as News

@@ -3,10 +3,13 @@ package uz.xabardor.rest.models
 import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 
-data class Tag(@SerializedName("id")
+data class Tag(
+                    @SerializedName("id")
                     val id: Int = 0,
                     @SerializedName("title")
-                    val title: String = "",
+                    val title: String? = "",
+                    @SerializedName("title_cyrl")
+                    val title_cyrl: String? = "",
                     @SerializedName("slug")
                     val slug: String = ""): Serializable{
 

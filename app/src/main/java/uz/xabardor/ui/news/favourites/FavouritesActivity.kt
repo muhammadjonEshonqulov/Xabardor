@@ -35,6 +35,7 @@ class FavouritesActivity : BaseActivity(), FavouritesView, OnItemClickListener<N
     override fun onCreatedView() {
         recyclerView = findViewById(R.id.recyclerview)
         favouritesAdapter = FavouritesAdapter(recyclerView)
+        favouritesAdapter.language = languageManager.currentLanguage
         favouritesAdapter.onItemClickListener = this
         favouritesAdapter.onTagClickListener = this
 

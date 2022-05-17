@@ -3,7 +3,6 @@ package uz.xabardor.ui.splash
 import android.os.Handler
 import android.os.Looper
 import android.view.View
-import android.widget.Toast
 import moxy.presenter.InjectPresenter
 import uz.xabardor.R
 import uz.xabardor.extensions.openMainActivity
@@ -34,7 +33,9 @@ class SplashActivity : BaseActivity(), SplashView {
     }
 
     override fun onErrorTags(throwable: Throwable) {
-
+        Handler(Looper.getMainLooper()).postDelayed({
+            openMainActivity()
+        }, 500)
     }
 
     override fun onSuccessTags() {

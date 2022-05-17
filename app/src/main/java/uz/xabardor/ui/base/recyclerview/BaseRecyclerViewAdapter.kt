@@ -36,7 +36,7 @@ abstract class BaseRecyclerViewAdapter<T, VH : BaseRecyclerViewHolder<T>>(
     }
 }
 
-interface OnItemClickListener<T> {
+interface   OnItemClickListener<T> {
     fun onItemClick(recyclerView: RecyclerView, item: T, position: Int)
 }
 

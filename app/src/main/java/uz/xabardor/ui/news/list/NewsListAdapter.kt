@@ -6,13 +6,20 @@ import android.view.ViewGroup
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.view.get
 import androidx.recyclerview.widget.RecyclerView
 import co.lujun.androidtagview.TagContainerLayout
 import co.lujun.androidtagview.TagView
 import com.bumptech.glide.Glide
 import uz.xabardor.R
 import uz.xabardor.extensions.dpToPx
+import uz.xabardor.extensions.language.Krill
+import uz.xabardor.extensions.language.Language
+import uz.xabardor.extensions.language.Uzbek
+import uz.xabardor.extensions.lg
+import uz.xabardor.rest.models.Adsense
 import uz.xabardor.rest.models.news.News
 import uz.xabardor.rest.services.BaseService
 import uz.xabardor.ui.base.recyclerview.group.BaseGroupRecyclerViewAdapter
@@ -27,6 +34,9 @@ class NewsListAdapter(reclerView: RecyclerView) :
     var onTagClickListener: OnTagClickListener? = null
     var onBannerOpenClickListener: OnBannerOpenClickListener? = null
 
+    var adsenseTop : List<Adsense>? = null
+    var adsenseCenter : List<Adsense>? = null
+    lateinit var language: Language
 
     override fun getItemViewType(elem: News, group: RecyclerViewGroup<News>, groupPosition: Int, position: Int): Int {
         when {
@@ -49,7 +59,7 @@ class NewsListAdapter(reclerView: RecyclerView) :
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseGroupRecyclerViewHolder<News> =
         when (viewType) {
             VIEW_TYPE_LARGE -> LargeHolder(parent)
-            VIEW_TYPE_LITTLE -> LittleHolder(parent)
+            VIEW_TYPE_LITTLE -> LargeHolder(parent)
             VIEW_TYPE_BANNER -> BannerHolder(parent)
             else -> LargeHolder(parent)
         }
@@ -69,8 +79,15 @@ class NewsListAdapter(reclerView: RecyclerView) :
         }
 
         override fun bind(elem: News, group: RecyclerViewGroup<News>, groupPosition: Int, position: Int) {
-            titleTextView.setText(elem.title)
-            descriptionTextView.setText(elem.description)
+            if (language.id == Krill().id){
+                titleTextView.setText(elem.title_cyrl)
+                descriptionTextView.setText(elem.description_cyrl)
+            } else if (language.id == Uzbek().id){
+                titleTextView.setText(elem.title)
+                descriptionTextView.setText(elem.description)
+            }
+
+
 
             val glide = Glide.with(recyclerView.context)
             glide.clear(imageView)
@@ -80,7 +97,13 @@ class NewsListAdapter(reclerView: RecyclerView) :
 
 
             elem.tags?.let { tags ->
-                tagContainerLayout.setTags(tags.map { "#${it.title}" })
+                tagContainerLayout.setTags(tags.map {
+                    if (language.id == Uzbek().id){
+                        "#${it.title}"
+                    } else {
+                        "#${it.title_cyrl}"
+                    }
+                })
             } ?: run {
                 tagContainerLayout.removeAllTags()
             }
@@ -97,7 +120,11 @@ class NewsListAdapter(reclerView: RecyclerView) :
                 override fun onTagClick(position: Int, text: String?) {
                     text?.let { str ->
                         elem.tags?.find {
-                            "#${it.title}" == str
+                            if (language.id == Uzbek().id){
+                                "#${it.title}" == str
+                            } else {
+                                "#${it.title_cyrl}" == str
+                            }
                         }?.let {
                             onTagClickListener?.onTagClick(it)
                         }
@@ -176,28 +203,59 @@ class NewsListAdapter(reclerView: RecyclerView) :
     inner class BannerHolder(parent: ViewGroup) :
         BaseGroupRecyclerViewHolder<News>(parent, R.layout.item_recyclerview_banner) {
 
-        val webView: WebView = itemView.findViewById(R.id.web_view)
+        val textView: TextView = itemView.findViewById(R.id.adsense_text_view_title)
+        val imageView: ImageView = itemView.findViewById(R.id.adsense_image_view)
+        val adsense_item_back: LinearLayout = itemView.findViewById(R.id.adsense_item_back)
 
         init {
-            val width = itemView.context.resources.displayMetrics.widthPixels
-            webView.layoutParams.height = Math.ceil(width / 2.0).toInt()
-            webView.settings.javaScriptEnabled = true
-            webView.webViewClient = object : WebViewClient() {
-                override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
-                    url?.let {
-                        onBannerOpenClickListener?.onOpenBanner(it)
-                    }
-                    return true
-                }
-            }
+//            val width = itemView.context.resources.displayMetrics.widthPixels
+//            webView.layoutParams.height = Math.ceil(width / 2.0).toInt()
+//            webView.settings.javaScriptEnabled = true
+//            webView.webViewClient = object : WebViewClient() {
+//                override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
+//                    url?.let {
+//                        onBannerOpenClickListener?.onOpenBanner(it)
+//                    }
+//                    return true
+//                }
+//            }
         }
 
         override fun bind(elem: News, group: RecyclerViewGroup<News>, groupPosition: Int, position: Int) {
             val headers = BaseService.getHeaders()
-            if (elem.isTopBanner)
-                webView.loadUrl(BaseService.BASE_API_URL + "ad/top", headers)
-            else
-                webView.loadUrl(BaseService.BASE_API_URL + "ad/center", headers)
+            if (elem.isTopBanner){
+                val glide = Glide.with(recyclerView.context)
+                glide.clear(imageView)
+                glide
+                    .load(adsenseTop?.get(0)?.photo)
+                    .into(imageView)
+//                adsenseTop?.get(0)?.title?.let {
+//                    textView.setText(it)
+//                }
+            }
+//                webView.loadUrl(BaseService.BASE_API_URL + "ad/top", headers).javaClass
+            else {
+                val glide = Glide.with(recyclerView.context)
+                glide.clear(imageView)
+                glide
+                    .load(adsenseCenter?.get(0)?.photo)
+                    .into(imageView)
+//                adsenseCenter?.get(0)?.title?.let {
+//                    textView .setText(it)
+//                }
+
+            }
+            adsense_item_back.setOnClickListener {
+                if (elem.isTopBanner){
+                    adsenseTop?.get(0)?.link?.let {
+                        onBannerOpenClickListener?.onOpenBanner(it)
+                    }
+                } else {
+                    adsenseCenter?.get(0)?.link?.let {
+                        onBannerOpenClickListener?.onOpenBanner(it)
+                    }
+                }
+            }
         }
     }
 

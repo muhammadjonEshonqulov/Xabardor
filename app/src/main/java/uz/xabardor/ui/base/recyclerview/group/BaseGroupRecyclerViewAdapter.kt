@@ -65,19 +65,23 @@ abstract class BaseGroupRecyclerViewAdapter<T, VH : BaseGroupRecyclerViewHolder<
     fun onSuccess(groups: List<RecyclerViewGroup<T>>) {
         this.groups = groups
         this.items = listOf()
-
-        groups.forEachIndexed { groupIndex, group ->
-            group.items.forEachIndexed { index, groupItem ->
-                val item = RecyclerViewGroupItem<T>(
+        if (groups.isNotEmpty()){
+            groups.forEachIndexed { groupIndex, group ->
+                group.items.forEachIndexed { index, groupItem ->
+                    val item = RecyclerViewGroupItem<T>(
                         isHeader = index == 0,
                         elem = groupItem,
                         group = group,
                         groupPosition = groupIndex,
                         position = index
-                )
+                    )
 
-                this.items = this.items.plus(item)
+                    this.items = this.items.plus(item)
+                }
             }
+
+        } else {
+            this.items = listOf()
         }
 
         notifyDataSetChanged()

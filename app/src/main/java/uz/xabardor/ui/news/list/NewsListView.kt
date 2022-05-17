@@ -11,6 +11,6 @@ interface NewsListView: MvpView {
 
     fun onErrorNewsList(throwable: Throwable)
 
-    fun onSuccessNewsList()
+    fun onSuccessNewsList(next: Long?, totalPages: Long?)
 
 }

@@ -8,6 +8,9 @@ import co.lujun.androidtagview.TagContainerLayout
 import co.lujun.androidtagview.TagView
 import com.bumptech.glide.Glide
 import uz.xabardor.R
+import uz.xabardor.extensions.language.Krill
+import uz.xabardor.extensions.language.Language
+import uz.xabardor.extensions.language.Uzbek
 import uz.xabardor.rest.models.news.News
 import uz.xabardor.ui.base.recyclerview.BaseRecyclerViewAdapter
 import uz.xabardor.ui.base.recyclerview.BaseRecyclerViewHolder
@@ -16,7 +19,7 @@ import uz.xabardor.ui.main.OnTagClickListener
 class FavouritesAdapter(reclerView: RecyclerView) : BaseRecyclerViewAdapter<News, FavouritesAdapter.NewsHolder>(reclerView) {
 
     var onTagClickListener: OnTagClickListener? = null
-
+    lateinit var language: Language
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NewsHolder = NewsHolder(parent)
 
@@ -34,8 +37,14 @@ class FavouritesAdapter(reclerView: RecyclerView) : BaseRecyclerViewAdapter<News
         }
 
         override fun bind(elem: News, position: Int) {
-            titleTextView.setText(elem.title)
-            descriptionTextView.setText(elem.description)
+            if (language.id == Krill().id){
+                titleTextView.setText(elem.title_cyrl)
+                descriptionTextView.setText(elem.content_cyrl)
+            } else if (language.id == Uzbek().id){
+                titleTextView.setText(elem.title)
+                descriptionTextView.setText(elem.content)
+            }
+
 
             val glide = Glide.with(recyclerView.context)
             glide.clear(imageView)
@@ -45,7 +54,13 @@ class FavouritesAdapter(reclerView: RecyclerView) : BaseRecyclerViewAdapter<News
 
 
             elem.tags?.let { tags ->
-                tagContainerLayout.setTags(tags.map { "#${it.title}" })
+                tagContainerLayout.setTags(tags.map {
+                    if (language.id == Uzbek().id){
+                        "#${it.title}"
+                    } else {
+                        "#${it.title_cyrl}"
+                    }
+                })
             } ?: run {
                 tagContainerLayout.removeAllTags()
             }
@@ -62,7 +77,12 @@ class FavouritesAdapter(reclerView: RecyclerView) : BaseRecyclerViewAdapter<News
                 override fun onTagClick(position: Int, text: String?) {
                     text?.let { str ->
                         elem.tags?.find {
-                            "#${it.title}" == str
+                            if (language.id == Uzbek().id){
+                                "#${it.title}" == str
+                            } else {
+                                "#${it.title_cyrl}" == str
+                            }
+
                         }?.let {
                             onTagClickListener?.onTagClick(it)
                         }

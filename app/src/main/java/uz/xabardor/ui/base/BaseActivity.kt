@@ -1,5 +1,6 @@
 package uz.xabardor.ui.base
 
+import android.content.res.Configuration
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -10,9 +11,12 @@ import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import moxy.MvpAppCompatActivity
 import uz.xabardor.R
+import uz.xabardor.extensions.language.Language
+import uz.xabardor.extensions.language.LanguageManager
 import uz.xabardor.extensions.openNoConnectionActivity
 import uz.xabardor.rest.services.BaseService
 import uz.xabardor.rest.services.NoConnectionListener
+import java.util.*
 
 abstract class BaseActivity : MvpAppCompatActivity(), View.OnClickListener, NoConnectionListener {
 
@@ -23,6 +27,7 @@ abstract class BaseActivity : MvpAppCompatActivity(), View.OnClickListener, NoCo
     var toolBarSearchImageView: ImageView? = null
     var toolBarFavouriteImageView: ImageView? = null
     var toolBarShareImageView: ImageView? = null
+    lateinit var languageManager: LanguageManager
 
     var toolBarSearchEditText: EditText? = null
 
@@ -36,6 +41,8 @@ abstract class BaseActivity : MvpAppCompatActivity(), View.OnClickListener, NoCo
 
         toolBar = findViewById(R.id.tool_bar)
         setSupportActionBar(toolBar)
+
+        languageManager = LanguageManager(this)
 
         toolBarMenuImageView = findViewById(R.id.image_view_toolbar_menu)
         toolBarLogoImageView = findViewById(R.id.image_view_toolbar_logo)
@@ -58,6 +65,7 @@ abstract class BaseActivity : MvpAppCompatActivity(), View.OnClickListener, NoCo
 
         setupToolbar()
         onCreatedView()
+        notifyLanguageChanged()
     }
 
     override fun onResume() {
@@ -75,6 +83,16 @@ abstract class BaseActivity : MvpAppCompatActivity(), View.OnClickListener, NoCo
     abstract fun setupToolbar()
 
     abstract fun onCreatedView()
+    protected fun notifyLanguageChanged() = onCreateLanguage(languageManager.currentLanguage)
 
+
+    open fun onCreateLanguage(language: Language) {
+
+        val configuration = Configuration()
+        configuration.setLocale(
+            Locale(languageManager.currentLanguage.userName)
+        )
+        resources.updateConfiguration(configuration, resources.displayMetrics)
+    }
 
 }

@@ -5,20 +5,17 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/colorWhite"
-        >
+        android:background="@color/colorWhite">
 
     <include
             layout="@layout/tool_bar"
-            android:visibility="gone"
-            />
+            android:visibility="gone" />
 
     <androidx.appcompat.widget.AppCompatImageView
             android:layout_width="match_parent"
             android:layout_height="70dp"
             android:layout_margin="100dp"
             app:srcCompat="@drawable/toolbar_logo"
-            android:layout_centerInParent="true"
-            />
+            android:layout_centerInParent="true" />
 
 </RelativeLayout>

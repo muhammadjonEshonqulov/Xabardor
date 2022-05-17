@@ -73,8 +73,10 @@ class AuthorPresenter : BasePresenter<AuthorView>() {
                     }
 
                     override fun onSuccess(elem: News.ListResponse) {
-                        newsList = newsList.plus(elem.data.newsList)
-                        next = elem.data.pageInfo.nextPage
+                        elem.data?.newsList?.let {
+                            newsList  = newsList.plus(it)
+                        }
+                        next = elem.pageInfo?.nextPage
                         viewState.onSuccessAuthorNewsList()
                     }
                 }
