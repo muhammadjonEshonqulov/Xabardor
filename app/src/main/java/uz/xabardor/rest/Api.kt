@@ -1,11 +1,13 @@
 package uz.xabardor.rest
 
+import uz.xabardor.rest.models.WeathersAppResponse
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
 import uz.xabardor.rest.models.AboutResponse
 import uz.xabardor.rest.models.Adsense
+import uz.xabardor.rest.models.ExchangeRatesData
 import uz.xabardor.rest.models.Tag
 import uz.xabardor.rest.models.news.Author
 import uz.xabardor.rest.models.news.News
@@ -16,13 +18,25 @@ interface Api {
     @GET("news/list")
     fun getNewsList(
         @Query("next") next: Long? = null,
-        @Query("size") size: Int? = 20,
+        @Query("size") size: Int? = 10,
         @Query("f") type: String? = null,
         @Query("v") tag: String? = null
     ): Call<News.ListResponse>
 
     @GET("ad/top")
     fun getAdTop(): Call<List<Adsense>>
+
+    @GET("ad/after_trend")
+    fun getAfterTrend(): Call<List<Adsense>>
+
+    @GET("ad/after_post")
+    fun getAfterPost(): Call<List<Adsense>>
+
+    @GET("exchange-rates")
+    fun getExchangeRates(): Call<List<ExchangeRatesData>>
+
+    @GET("weather")
+    fun getWeather(): Call<WeathersAppResponse>
 
     @GET("info/about")
     fun getAbout(): Call<List<AboutResponse>>
@@ -36,7 +50,7 @@ interface Api {
     @GET("news/search")
     fun getNewsListBySearch(
         @Query("next") next: Long? = null,
-        @Query("size") size: Int? = 20,
+        @Query("size") size: Int? = 10,
         @Query("search_text") seachText: String? = null
     ): Call<News.ListResponse>
 

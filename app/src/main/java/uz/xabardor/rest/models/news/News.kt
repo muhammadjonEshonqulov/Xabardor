@@ -4,6 +4,9 @@ import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
 import uz.xabardor.database.NewsDatabase
 import uz.xabardor.rest.models.Tag
+import uz.xabardor.rest.models.content.Content
+import uz.xabardor.rest.models.rubric.Rubric
+import uz.xabardor.rest.models.rubric.RubricsData
 import java.io.Serializable
 import java.util.*
 
@@ -22,8 +25,8 @@ data class News(
     val photo_source_cyrl: String?,
     val photo_source_ru: String?,
     val thumb: String?,
-    val content: String?,
-    val content_cyrl: String?,
+    val content: List<Content>?,
+    val content_cyrl: List<Content>?,
     val content_ru: String?,
     val author: String?,
     val is_main: Boolean?,
@@ -33,7 +36,7 @@ data class News(
     val published_at: String?,
     val updated_at: String?,
     val is_published: Boolean?,
-    val rubric: String?,
+//    val rubric: RubricsData?,
     val tags: List<Tag>?,
     val isSelected: Boolean?,
     val showDesc: Boolean?,

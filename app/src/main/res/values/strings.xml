@@ -4,10 +4,13 @@
     <string name="tags">Teglar</string>
     <string name="about_us">Biz haqimizda</string>
     <string name="contact_us">Biz bilan aloqa</string>
-    <string name="newslist_is_empty">Xarbarlar yo`q</string>
+    <string name="newslist_is_empty">Xabarlar yo\'q</string>
     <string name="favourites">Tanlangan maqolalar</string>
-    <string name="actual_theme">Dolzarb mavzu</string>
+    <string name="actual_theme">Eng ko\'p o\'qilganlar</string>
+    <string name="last_news">So\'nggi yangiliklar</string>
 
     <string name="all">Barchasi</string>
     <string name="search">Qidirish</string>
+    <string name="day">Kunduzi</string>
+    <string name="night">Kechasi</string>
 </resources>

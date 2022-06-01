@@ -1,11 +1,9 @@
 package uz.xabardor.rest.services
 
-import com.readystatesoftware.chuck.ChuckInterceptor
 import okhttp3.ConnectionSpec
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import uz.xabardor.BuildConfig
@@ -22,20 +20,22 @@ open class BaseService {
     val api: Api
 
     init {
-        val logging = HttpLoggingInterceptor();
-        logging.level = HttpLoggingInterceptor.Level.BODY
+//        val logging = HttpLoggingInterceptor();
+//        logging.level = HttpLoggingInterceptor.Level.BODY
 
         var builder = OkHttpClient().newBuilder()
             .cache(null)
-            .addInterceptor(logging)
+//            .addInterceptor(logging)
             .addInterceptor(getTokenInterceptor())
             .connectionSpecs(listOf(ConnectionSpec.MODERN_TLS, ConnectionSpec.CLEARTEXT))
             .connectTimeout(50000L, TimeUnit.MILLISECONDS)
             .readTimeout(50000L, TimeUnit.MILLISECONDS)
             .writeTimeout(50000L, TimeUnit.MILLISECONDS)
-        if (BuildConfig.isDebug) {
-            builder.addInterceptor(ChuckInterceptor(App.context))
-        }
+//        if (BuildConfig.isDebug) {
+//            builder.addInterceptor(ChuckerInterceptor.Builder(App.context).collector(
+//                ChuckerCollector(App.context)
+//            ).build())
+//        }
         var client = builder.build()
 
         var retrofit = Retrofit.Builder()
@@ -48,19 +48,16 @@ open class BaseService {
     }
 
     fun getTokenInterceptor(): Interceptor {
-        return object : Interceptor {
-            override fun intercept(chain: Interceptor.Chain): okhttp3.Response {
+        return Interceptor { chain ->
+            val requestBuilder = chain
+                .request()
+                .newBuilder()
+            addHeaders(requestBuilder)
 
-                val requestBuilder = chain
-                    .request()
-                    .newBuilder()
-                addHeaders(requestBuilder)
+            val request = requestBuilder.build()
+            var response = chain.proceed(request)
 
-                val request = requestBuilder.build()
-                var response = chain.proceed(request)
-
-                return response;
-            }
+            response
         }
     }
 
@@ -73,7 +70,7 @@ open class BaseService {
             val time = System.currentTimeMillis()
 
 
-             requestBuilder.addHeader("time", "$time")
+            requestBuilder.addHeader("time", "$time")
             requestBuilder.addHeader("Authorization", "Token $KEY")
         }
 

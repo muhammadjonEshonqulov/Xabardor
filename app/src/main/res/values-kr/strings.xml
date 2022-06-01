@@ -1,0 +1,15 @@
+<resources>
+    <string name="related_newses">Бошқа мақолалар</string>
+    <string name="tags">Теглар</string>
+    <string name="about_us">Биз ҳақимизда</string>
+    <string name="contact_us">Биз билан алоқа</string>
+    <string name="newslist_is_empty">Хабарлар ёқ</string>
+    <string name="favourites">Танланган мақолалар</string>
+    <string name="actual_theme">Энг кўп ўқилганлар</string>
+    <string name="last_news">Сўнгги янгиликлар</string>
+
+    <string name="all">Барчаси</string>
+    <string name="search">Қидириш</string>
+    <string name="day">Кундузи</string>
+    <string name="night">Кечаси</string>
+</resources>

@@ -1,9 +1,11 @@
 package uz.xabardor.ui.main
 
+import uz.xabardor.rest.models.WeathersAppResponse
 import moxy.MvpView
 import moxy.viewstate.strategy.OneExecutionStateStrategy
 import moxy.viewstate.strategy.StateStrategyType
-import uz.xabardor.rest.models.rubric.RubricsData
+import uz.xabardor.rest.models.ExchangeRatesData
+import uz.xabardor.rest.models.news.News
 
 @StateStrategyType(OneExecutionStateStrategy::class)
 interface MainView : MvpView {
@@ -12,8 +14,10 @@ interface MainView : MvpView {
 
     fun onErrorNewsList(throwable: Throwable)
 
-    fun onSuccessNewsList()
+    fun onSuccessNewsList(tag:String? = null)
 
-    fun onSuccessRubrics(rubrics: List<RubricsData>)
+    fun onSuccessTopWeatherAndExchanges(list: List<ExchangeRatesData>, list1: WeathersAppResponse)
+
+    fun onSuccessMore(data: List<News>, groupPosition: Int)
 
 }

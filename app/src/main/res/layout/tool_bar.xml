@@ -1,57 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.appcompat.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/tool_bar"
-    android:layout_width="match_parent"
-    android:layout_height="56dp"
-    android:background="@color/colorPrimary"
-    android:orientation="vertical"
-    app:contentInsetStart="0dp">
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/tool_bar"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="@color/colorPrimary"
+        android:orientation="vertical"
+        app:contentInsetStart="0dp">
 
     <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/image_view_toolbar_back"
-            android:layout_width="?actionBarSize"
-            android:layout_height="?actionBarSize"
-            android:background="?actionBarItemBackground"
-            android:padding="18dp"
-            app:srcCompat="@drawable/icon_back" />
-
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/image_view_toolbar_menu"
-            android:layout_width="?actionBarSize"
-            android:layout_height="?actionBarSize"
-            android:background="?actionBarItemBackground"
-            android:padding="16dp"
-            android:visibility="invisible"
-            app:srcCompat="@drawable/icon_menu" />
+                android:id="@+id/image_view_toolbar_back"
+                android:layout_width="?actionBarSize"
+                android:layout_height="?actionBarSize"
+                android:background="?actionBarItemBackground"
+                android:padding="18dp"
+                app:srcCompat="@drawable/icon_back" />
 
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/image_view_toolbar_search"
-            android:layout_width="?actionBarSize"
-            android:layout_height="?actionBarSize"
-            android:layout_alignParentRight="true"
-            android:background="?actionBarItemBackground"
-            android:padding="16dp"
-            android:visibility="gone"
-            app:srcCompat="@drawable/icon_search"
-            app:tint="@color/colorTextDark" />
+                android:id="@+id/image_view_toolbar_menu"
+                android:layout_width="?actionBarSize"
+                android:layout_height="?actionBarSize"
+                android:background="?actionBarItemBackground"
+                android:padding="16dp"
+                android:visibility="invisible"
+                app:srcCompat="@drawable/icon_menu" />
+
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/image_view_toolbar_favourite"
-            android:layout_width="?actionBarSize"
-            android:layout_height="?actionBarSize"
-            android:layout_alignParentRight="true"
-            android:background="?actionBarItemBackground"
-            android:padding="16dp"
-            android:visibility="gone"
-            app:srcCompat="@drawable/icon_favourite_add"
-            app:tint="@color/colorTextLight" />
+                android:id="@+id/image_view_toolbar_search"
+                android:layout_width="?actionBarSize"
+                android:layout_height="?actionBarSize"
+                android:layout_alignParentRight="true"
+                android:background="?actionBarItemBackground"
+                android:padding="16dp"
+                android:visibility="gone"
+                app:srcCompat="@drawable/icon_search"
+                app:tint="@color/colorTextDark" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/image_view_toolbar_favourite"
+                android:layout_width="?actionBarSize"
+                android:layout_height="?actionBarSize"
+                android:layout_alignParentRight="true"
+                android:background="?actionBarItemBackground"
+                android:padding="16dp"
+                android:visibility="gone"
+                app:srcCompat="@drawable/icon_favourite_add"
+                app:tint="@color/colorTextLight" />
 
         <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/image_view_toolbar_share"
@@ -67,39 +67,43 @@
 
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/image_view_toolbar_logo"
-            android:layout_width="wrap_content"
-            android:layout_height="18dp"
-            android:layout_centerInParent="true"
-            android:visibility="invisible"
-            app:srcCompat="@drawable/toolbar_logo" />
+                android:id="@+id/image_view_toolbar_logo"
+                android:layout_width="wrap_content"
+                android:layout_height="18dp"
+                android:layout_centerInParent="true"
+                android:clickable="true"
+                android:focusable="true"
+                android:visibility="invisible"
+                app:srcCompat="@drawable/toolbar_logo" />
 
         <TextView
-            android:id="@+id/text_view_toolbar_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:layout_marginLeft="?actionBarSize"
-            android:layout_marginRight="?actionBarSize"
-            android:fontFamily="@font/proximanova_bold"
-            android:gravity="center"
-            android:singleLine="true"
-            android:textColor="@color/colorTextDark"
-            android:textSize="16sp" />
+                android:id="@+id/text_view_toolbar_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_marginLeft="?actionBarSize"
+                android:layout_marginRight="?actionBarSize"
+                android:clickable="true"
+                android:focusable="true"
+                android:fontFamily="@font/proximanova_bold"
+                android:gravity="center"
+                android:singleLine="true"
+                android:textColor="@color/colorTextDark"
+                android:textSize="16sp" />
 
 
         <androidx.appcompat.widget.AppCompatEditText
-            android:id="@+id/edit_text_toolbar_search"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="?actionBarSize"
-            android:layout_marginRight="?actionBarSize"
-            android:background="@color/colorTransparent"
-            android:hint="@string/search"
-            android:imeOptions="actionSearch"
-            android:singleLine="true"
-            android:textColor="@color/colorTextDark"
-            android:visibility="gone" />
+                android:id="@+id/edit_text_toolbar_search"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="?actionBarSize"
+                android:layout_marginRight="?actionBarSize"
+                android:background="@color/colorTransparent"
+                android:hint="@string/search"
+                android:imeOptions="actionSearch"
+                android:singleLine="true"
+                android:textColor="@color/colorTextDark"
+                android:visibility="gone" />
 
     </RelativeLayout>
 

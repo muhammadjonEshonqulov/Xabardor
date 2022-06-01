@@ -1,6 +1,5 @@
 package uz.xabardor.ui.news
 
-import android.util.Log
 import moxy.InjectViewState
 import uz.xabardor.rest.callbacks.BaseCallback
 import uz.xabardor.rest.models.Adsense
@@ -22,7 +21,7 @@ class NewsPresenter : BasePresenter<NewsView>() {
     }
 
     fun getAdTop() {
-        NewsService.getAdTop(
+        NewsService.getAfterPost(
             callback = object : BaseCallback<List<Adsense>> {
                 override fun onLoading() {
                 }

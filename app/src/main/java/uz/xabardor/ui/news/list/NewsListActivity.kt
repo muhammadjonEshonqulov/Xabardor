@@ -19,9 +19,10 @@ import uz.xabardor.ui.base.recyclerview.OnBottomScrolledListener
 import uz.xabardor.ui.base.recyclerview.group.OnGroupRecyclerViewItemClickListener
 import uz.xabardor.ui.base.recyclerview.group.model.RecyclerViewGroup
 import uz.xabardor.ui.main.OnBannerOpenClickListener
+import uz.xabardor.ui.main.OnMoreClickListener
 import uz.xabardor.ui.main.OnTagClickListener
 
-class NewsListActivity : BaseActivity(), NewsListView, OnTagClickListener,
+class NewsListActivity : BaseActivity(), NewsListView, OnTagClickListener, OnMoreClickListener,
     OnBottomScrolledListener, OnGroupRecyclerViewItemClickListener<News>, OnBannerOpenClickListener {
 
     @InjectPresenter
@@ -67,6 +68,7 @@ class NewsListActivity : BaseActivity(), NewsListView, OnTagClickListener,
 
 
         newsListAdapter = NewsListAdapter(recyclerView)
+        newsListAdapter.onMoreClickListener = this
         newsListAdapter.language = languageManager.currentLanguage
         newsListAdapter.onGroupRecyclerViewItemClickListener = this
         newsListAdapter.onTagClickListener = this
@@ -99,11 +101,11 @@ class NewsListActivity : BaseActivity(), NewsListView, OnTagClickListener,
     }
 
     override fun onBottomScrolled(recyclerView: RecyclerView) {
-        if (next != null && total != null){
-            if (total!! >= next!!){
-                presenter.getNewsList()
-            }
-        }
+//        if (next != null && total != null){
+//            if (total!! >= next!!){
+//                presenter.getNewsList()
+//            }
+//        }
     }
 
 
@@ -143,7 +145,7 @@ class NewsListActivity : BaseActivity(), NewsListView, OnTagClickListener,
 
         groups = groups.plus(
             RecyclerViewGroup(
-                items = presenter.newsList.filterIndexed { index, news -> 1 <= index && index <= 4 }
+                items = presenter.newsList.filterIndexed { index, news -> 1 <= index && index > 0 },next = presenter.next
             )
         )
 
@@ -153,11 +155,11 @@ class NewsListActivity : BaseActivity(), NewsListView, OnTagClickListener,
             )
         )
 
-        groups = groups.plus(
-            RecyclerViewGroup(
-                items = presenter.newsList.filterIndexed { index, news -> 4 < index }
-            )
-        )
+//        groups = groups.plus(
+//            RecyclerViewGroup(
+//                items = presenter.newsList.filterIndexed { index, news -> 4 < index }
+//            )
+//        )
         newsListAdapter.adsenseTop = presenter.adsenseTopList
         newsListAdapter.adsenseCenter = presenter.adsenseCenterList
         newsListAdapter.onSuccess(groups)
@@ -176,5 +178,18 @@ class NewsListActivity : BaseActivity(), NewsListView, OnTagClickListener,
     companion object {
         val BUNDLE_TAG = "tag"
         val BUNDLE_SEARCH_TEXT = "search_text"
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        recyclerView.adapter = null
+    }
+
+    override fun onMoreClick(groupPosition: Int) {
+        if (next != null && total != null){
+            if (total!! >= next!!){
+                presenter.getNewsList()
+            }
+        }
     }
 }

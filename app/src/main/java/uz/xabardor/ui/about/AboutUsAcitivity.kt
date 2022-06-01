@@ -1,6 +1,7 @@
 package uz.xabardor.ui.about
 
 import android.text.Html
+import android.text.method.LinkMovementMethod
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
@@ -49,5 +50,6 @@ class AboutUsAcitivity : BaseActivity(), AboutUsView {
                 text_view.text = ""+Html.fromHtml(it)
             }
         }
+        text_view.movementMethod = LinkMovementMethod.getInstance();
     }
 }

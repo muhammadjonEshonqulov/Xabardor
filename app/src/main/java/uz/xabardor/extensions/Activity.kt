@@ -2,15 +2,19 @@ package uz.xabardor.extensions
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
+import android.view.View
+import android.view.inputmethod.InputMethodManager
 import uz.xabardor.rest.models.Tag
 import uz.xabardor.rest.models.news.Author
 import uz.xabardor.rest.models.news.News
 import uz.xabardor.rest.models.rubric.RubricsData
 import uz.xabardor.ui.about.AboutUsAcitivity
-import uz.xabardor.ui.contact.ContactUsAcitivity
+import uz.xabardor.ui.contact.ContactUsActivity
 import uz.xabardor.ui.main.MainActivity
 import uz.xabardor.ui.news.NewsActivity
 import uz.xabardor.ui.news.author.AuthorActivity
@@ -18,6 +22,8 @@ import uz.xabardor.ui.news.favourites.FavouritesActivity
 import uz.xabardor.ui.news.list.NewsListActivity
 import uz.xabardor.ui.no_connection.NoConnectionActivity
 import uz.xabardor.ui.splash.SplashActivity
+import uz.xabardor.ui.video.VideoActivity
+import java.net.URL
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
@@ -48,6 +54,13 @@ fun Activity.openNewsListActivity(
         putString(NewsListActivity.BUNDLE_SEARCH_TEXT, searchText)
     })
 }
+
+fun Activity.openVideoListActivity(
+    bundle: Bundle
+) {
+    startActivity<VideoActivity>(bundle = bundle)
+}
+
 fun Activity.openNewsListActivity(
     rubricsData: RubricsData? = null,
     searchText: String? = null
@@ -56,6 +69,13 @@ fun Activity.openNewsListActivity(
         putSerializable(NewsListActivity.BUNDLE_TAG, rubricsData)
         putString(NewsListActivity.BUNDLE_SEARCH_TEXT, searchText)
     })
+}
+fun URL.getFileSize(): Int? {
+    return try {
+        openConnection().contentLength
+    } catch (x: Exception) {
+        null
+    }
 }
 fun Activity.openBrowser(url: String) {
     try {
@@ -66,14 +86,23 @@ fun Activity.openBrowser(url: String) {
         e.printStackTrace()
     }
 }
-
-
+fun hideKeyBoard(activity:Activity?) {
+    val view = activity?.currentFocus ?: View(activity)
+    val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+    imm.hideSoftInputFromWindow(view.windowToken, 0)
+}
+fun View?.blockClickable(
+    blockTimeMilles: Long = 500
+) {
+    this?.isClickable = false
+    Handler().postDelayed({ this?.isClickable = true }, blockTimeMilles)
+}
 fun Activity.openAboutUsActivity() {
     startActivity<AboutUsAcitivity>()
 }
 
 fun Activity.openContactUsActivity() {
-    startActivity<ContactUsAcitivity>()
+    startActivity<ContactUsActivity>()
 }
 
 fun Activity.openFavouritesActivity() {

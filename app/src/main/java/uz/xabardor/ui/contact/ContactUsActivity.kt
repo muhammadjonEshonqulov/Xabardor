@@ -1,6 +1,7 @@
 package uz.xabardor.ui.contact
 
 import android.text.Html
+import android.text.method.LinkMovementMethod
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
@@ -12,7 +13,7 @@ import uz.xabardor.rest.models.AboutResponse
 import uz.xabardor.ui.base.BaseActivity
 
 
-class ContactUsAcitivity : BaseActivity(), ContactUsView {
+class ContactUsActivity : BaseActivity(), ContactUsView {
 
 
     @InjectPresenter
@@ -50,5 +51,6 @@ class ContactUsAcitivity : BaseActivity(), ContactUsView {
                 text_view.text = ""+Html.fromHtml(it)
             }
         }
+        text_view.movementMethod = LinkMovementMethod.getInstance();
     }
 }

@@ -1,41 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
 
     <View
-        android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:background="@color/colorPrimary"
-        />
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:background="@color/colorPrimary" />
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="70dp"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:padding="16dp"
-        >
-        
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="16dp">
+
         <androidx.appcompat.widget.AppCompatImageView
-            android:layout_width="16dp"
-            android:layout_height="16dp"
-            app:srcCompat="@drawable/icon_star"
-            />
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                app:srcCompat="@drawable/icon_star" />
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
-            android:fontFamily="@font/proximanova_extrabold"
-            android:textSize="24sp"
-            android:text="@string/actual_theme"
-            android:textColor="@color/colorTextDark"
-            />
-        
+                android:id="@+id/title_header"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:fontFamily="@font/proximanova_extrabold"
+                android:textColor="@color/colorTextDark"
+                android:textSize="24sp" />
+
     </LinearLayout>
 
 </LinearLayout>

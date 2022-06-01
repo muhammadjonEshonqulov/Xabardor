@@ -24,21 +24,23 @@ class RelatedAdapter(recyclerView: RecyclerView) :
         var tagTextView: TextView = itemView.findViewById(R.id.text_view_tag)
 
         override fun bind(elem: News, position: Int) {
-            if (language.id == Krill().id){
-                titleTextView.setText(elem.title_cyrl)
-            } else if (language.id == Uzbek().id){
-                titleTextView.setText(elem.title)
+            Language.getNameByLanguage(elem.tags?.firstOrNull()?.title, elem.tags?.firstOrNull()?.title_cyrl,language)?.let {
+                tagTextView.setText(""+it)
+            }
+            Language.getNameByLanguage(elem.title, elem.title_cyrl, language)?.let {
+                titleTextView.setText(""+it)
             }
 
-            elem.tags?.firstOrNull()?.let {
-                if (language.id == Krill().id){
-                    tagTextView.setText(it.title_cyrl)
-                } else if (language.id == Uzbek().id){
-                    tagTextView.setText(it.title)
-                }
-            } ?: run {
-                tagTextView.setText("")
-            }
+
+//            elem.tags?.firstOrNull()?.let {
+//                if (language.id == Krill().id){
+//                    tagTextView.setText(it.title_cyrl)
+//                } else if (language.id == Uzbek().id){
+//                    tagTextView.setText(it.title)
+//                }
+//            } ?: run {
+//                tagTextView.setText("")
+//            }
         }
     }
 }

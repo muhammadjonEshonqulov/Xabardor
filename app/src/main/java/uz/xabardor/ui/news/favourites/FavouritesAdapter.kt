@@ -39,10 +39,10 @@ class FavouritesAdapter(reclerView: RecyclerView) : BaseRecyclerViewAdapter<News
         override fun bind(elem: News, position: Int) {
             if (language.id == Krill().id){
                 titleTextView.setText(elem.title_cyrl)
-                descriptionTextView.setText(elem.content_cyrl)
+                descriptionTextView.setText(elem.description_cyrl)
             } else if (language.id == Uzbek().id){
                 titleTextView.setText(elem.title)
-                descriptionTextView.setText(elem.content)
+                descriptionTextView.setText(elem.description)
             }
 
 

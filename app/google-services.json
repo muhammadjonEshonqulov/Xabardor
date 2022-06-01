@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "347870403043",
+    "firebase_url": "https://xabardor-198a6.firebaseio.com",
+    "project_id": "xabardor-198a6",
+    "storage_bucket": "xabardor-198a6.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:347870403043:android:bbdc1ede0300dfa5",
+        "android_client_info": {
+          "package_name": "uz.xabardor"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "347870403043-ckha98314nhap9t9nog9g44hk819aj5g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCuJRzlBlU8COlZus0MAEzhEGQuTnOhhbk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "347870403043-ckha98314nhap9t9nog9g44hk819aj5g.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

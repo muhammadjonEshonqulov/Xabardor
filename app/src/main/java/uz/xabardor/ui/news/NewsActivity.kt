@@ -1,32 +1,36 @@
 package uz.xabardor.ui.news
 
 import android.content.Intent
-import android.text.Html
 import android.view.View
-import android.webkit.WebView
-import android.webkit.WebViewClient
 import android.widget.*
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.os.bundleOf
 import androidx.core.widget.NestedScrollView
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import co.lujun.androidtagview.TagContainerLayout
 import co.lujun.androidtagview.TagView
-import moxy.presenter.InjectPresenter
 import com.bumptech.glide.Glide
 import de.hdodenhof.circleimageview.CircleImageView
+import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import uz.xabardor.R
 import uz.xabardor.extensions.*
 import uz.xabardor.extensions.language.Krill
+import uz.xabardor.extensions.language.Language
 import uz.xabardor.extensions.language.Uzbek
-import uz.xabardor.rest.models.Adsense
+import uz.xabardor.rest.models.content.Content
 import uz.xabardor.rest.models.news.News
-import uz.xabardor.rest.services.BaseService
 import uz.xabardor.ui.base.BaseActivity
+import uz.xabardor.ui.base.BottomSheetDialogPhotos
 import uz.xabardor.ui.base.recyclerview.OnItemClickListener
+import uz.xabardor.ui.news.content.ContentAdapter
+import uz.xabardor.ui.news.content.ContentAdapterCallBack
 
 
-class NewsActivity : BaseActivity(), NewsView, OnItemClickListener<News>, TagView.OnTagClickListener {
+class NewsActivity : BaseActivity(), NewsView, OnItemClickListener<News>,
+    TagView.OnTagClickListener,
+    ContentAdapterCallBack {
 
     @InjectPresenter
     lateinit var presenter: NewsPresenter
@@ -49,19 +53,20 @@ class NewsActivity : BaseActivity(), NewsView, OnItemClickListener<News>, TagVie
 
 
     lateinit var titleTextView: TextView
-    lateinit var messageTextView: TextView
+    lateinit var recyclerViewDescription: RecyclerView
+    lateinit var contentAdapter: ContentAdapter
     lateinit var dateTextView: TextView
     lateinit var countViewTextView: TextView
 
-    lateinit var textViewAdsense : TextView
-    lateinit var imageViewAdsense : ImageView
-    lateinit var adsenseLay : RelativeLayout
+    lateinit var textViewAdsense: TextView
+    lateinit var imageViewAdsense: ImageView
+    lateinit var adsenseLay: RelativeLayout
 
 
-    lateinit var authorLinearLayout: LinearLayout
-    lateinit var authorNameTextView: TextView
-    lateinit var authorDescriptionTextView: TextView
-    lateinit var authorImageView: CircleImageView
+//    lateinit var authorLinearLayout: LinearLayout
+//    lateinit var authorNameTextView: TextView
+//    lateinit var authorDescriptionTextView: TextView
+//    lateinit var authorImageView: CircleImageView
 
     lateinit var progressBar: ProgressBar
     lateinit var scrollView: NestedScrollView
@@ -81,6 +86,8 @@ class NewsActivity : BaseActivity(), NewsView, OnItemClickListener<News>, TagVie
         textViewAdsense = findViewById(R.id.adsense_text_view_title)
         imageViewAdsense = findViewById(R.id.adsense_image_view)
         adsenseLay = findViewById(R.id.adsense_lay)
+        contentAdapter = ContentAdapter()
+        contentAdapter.callBack = this
 
         relatedRecyclerView = findViewById(R.id.recyclerview)
         relatedAdapter = RelatedAdapter(relatedRecyclerView)
@@ -104,10 +111,10 @@ class NewsActivity : BaseActivity(), NewsView, OnItemClickListener<News>, TagVie
 //        }
 
 
-        authorLinearLayout = findViewById(R.id.linear_layout_author)
-        authorNameTextView = findViewById(R.id.text_view_author_name)
-        authorDescriptionTextView = findViewById(R.id.text_view_author_description)
-        authorImageView = findViewById(R.id.image_view_author)
+//        authorLinearLayout = findViewById(R.id.linear_layout_author)
+//        authorNameTextView = findViewById(R.id.text_view_author_name)
+//        authorDescriptionTextView = findViewById(R.id.text_view_author_description)
+//        authorImageView = findViewById(R.id.image_view_author)
 
 
 
@@ -117,7 +124,7 @@ class NewsActivity : BaseActivity(), NewsView, OnItemClickListener<News>, TagVie
 
 
         titleTextView = findViewById(R.id.text_view_title)
-        messageTextView = findViewById(R.id.text_view_description)
+        recyclerViewDescription = findViewById(R.id.recycler_view_description)
         dateTextView = findViewById(R.id.text_view_date)
         countViewTextView = findViewById(R.id.text_view_count_view)
 
@@ -131,7 +138,7 @@ class NewsActivity : BaseActivity(), NewsView, OnItemClickListener<News>, TagVie
         imageView.layoutParams.height = width * 180 / 320
 
 
-        authorLinearLayout.setOnClickListener(this)
+//        authorLinearLayout.setOnClickListener(this)
 
     }
 
@@ -154,11 +161,11 @@ class NewsActivity : BaseActivity(), NewsView, OnItemClickListener<News>, TagVie
                 sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody)
                 startActivity(Intent.createChooser(sharingIntent, "Xabardor.uz"))
             }
-            authorLinearLayout -> {
-                presenter.author?.let {
-                    openAuthorActivity(author = it)
-                }
-            }
+//            authorLinearLayout -> {
+//                presenter.author?.let {
+//                    openAuthorActivity(author = it)
+//                }
+//            }
         }
     }
 
@@ -178,15 +185,13 @@ class NewsActivity : BaseActivity(), NewsView, OnItemClickListener<News>, TagVie
     override fun onTagClick(position: Int, text: String?) {
         text?.let { str ->
             news.tags?.find {
-                if (languageManager.currentLanguage.id == Uzbek().id){
-                    "#${it.title}" == str
+                Language.getNameByLanguage(it.title, it.title_cyrl, languageManager.currentLanguage)?.let {
+                    "#${it}" == str
+                } == true
 
-                } else {
-                    "#${it.title_cyrl}" == str
-                }
             }?.let {
                 openNewsListActivity(
-                        tag = it
+                    tag = it
                 )
             }
         }
@@ -209,13 +214,20 @@ class NewsActivity : BaseActivity(), NewsView, OnItemClickListener<News>, TagVie
     override fun onSuccessNewsDetail() {
         loadWebView()
 
-        if (languageManager.currentLanguage.id == Krill().id){
+        if (languageManager.currentLanguage.id == Krill().id) {
             titleTextView.setText(presenter.news.title_cyrl)
-            messageTextView.setText(Html.fromHtml(presenter.news.content_cyrl))
-        } else if (languageManager.currentLanguage.id == Uzbek().id){
+            presenter.news.content_cyrl?.let {
+                contentAdapter.data = it
+            }
+
+        } else if (languageManager.currentLanguage.id == Uzbek().id) {
             titleTextView.setText(presenter.news.title)
-            messageTextView.setText(Html.fromHtml(presenter.news.content))
+            presenter.news.content?.let {
+                contentAdapter.data = it
+            }
         }
+        recyclerViewDescription.adapter = contentAdapter
+        recyclerViewDescription.layoutManager = LinearLayoutManager(this)
 
 
         presenter.news.published?.let {
@@ -223,45 +235,46 @@ class NewsActivity : BaseActivity(), NewsView, OnItemClickListener<News>, TagVie
         }
         countViewTextView.setText("${presenter.news.views}")
         news.tags?.let { tags ->
-            tagContainerLayout.setTags(tags.map {
-                if (languageManager.currentLanguage.id == Krill().id){
-                    "#${it.title_cyrl}"
-                } else {
-                    "#${it.title}"
+            tags.map {
+                Language.getNameByLanguage(it.title, it.title_cyrl, languageManager.currentLanguage)?.let {
+                    "#${it}"
                 }
-            })
+//                if (languageManager.currentLanguage.id == Krill().id) {
+//                    "#${it.title_cyrl}"
+//                } else {
+//                    "#${it.title}"
+//                }
+            }.let {
+
+                tagContainerLayout.setTags(it)
+            }
         }
 
         if (news.image.show) {
             imageLinearLayout.visibility = View.VISIBLE
             Glide.with(this)
-                    .load(news.image.orginal)
-                    .into(imageView)
+                .load(news.image.orginal)
+                .into(imageView)
             imageCaptionTextView.setText(news.image.caption)
         } else {
             imageLinearLayout.visibility = View.GONE
         }
 
-        presenter.author?.let {
-            if (!it.hidden) {
-                Glide.with(this)
-                        .load(it.avatar)
-                        .into(authorImageView)
-
-
-                authorNameTextView.setText(it.fullName)
-                authorDescriptionTextView.setText(it.description)
-
-                authorLinearLayout.visibility = View.VISIBLE
-            }
-        }
+//        presenter.author?.let {
+//            if (!it.hidden) {
+//                Glide.with(this)
+//                    .load(it.avatar)
+//                    .into(authorImageView)
+//
+//
+//                authorNameTextView.setText(it.fullName)
+//                authorDescriptionTextView.setText(it.description)
+//
+//                authorLinearLayout.visibility = View.VISIBLE
+//            }
+//        }
 
         relatedAdapter.onSuccess(presenter.relatedNewsList)
-
-
-
-
-
 
         toolBarFavouriteImageView?.visibility = View.VISIBLE
         toolBarShareImageView?.visibility = View.VISIBLE
@@ -298,5 +311,25 @@ class NewsActivity : BaseActivity(), NewsView, OnItemClickListener<News>, TagVie
 
     companion object {
         val NEWS = "news"
+    }
+
+    override fun onItemClick(content: Content) {
+        when (content.type) {
+            "video" -> {
+                val bundle = bundleOf("url_video" to content.src)
+                openVideoListActivity(bundle)
+            }
+            "image" -> {
+                content.src?.let {
+                    val dialogPhoto = BottomSheetDialogPhotos(it)
+                    dialogPhoto.show(supportFragmentManager, "dialog")
+                }
+            }
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        recyclerViewDescription.adapter = null
     }
 }

@@ -1,19 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="40dp"
-    android:background="@drawable/clickable_drawer_item"
-    android:gravity="center_vertical"
-    android:orientation="horizontal">
-
-    <TextView
-        android:id="@+id/text_view"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="28dp"
-        android:fontFamily="@font/proximanova_bold"
-        android:text="test"
-        android:textColor="@color/colorBlack"
-        android:textSize="16sp" />
+        android:gravity="center_vertical"
+        android:background="?selectableItemBackground"
+        android:orientation="vertical">
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:gravity="center"
+            android:id="@+id/rubric_item"
+            android:background="?selectableItemBackground"
+            android:orientation="horizontal">
+
+        <TextView
+                android:id="@+id/text_view"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_weight="1"
+                android:fontFamily="@font/proximanova_bold"
+                android:text="test"
+                android:textColor="@color/colorBlack"
+                android:textSize="16sp" />
+
+        <ImageView
+                android:id="@+id/more_topic_item"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="10dp"
+                android:padding="7dp"
+                android:src="@drawable/ic_right_follow" />
+    </LinearLayout>
+
+
+    <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:id="@+id/rubrics_list"
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
 
 </LinearLayout>

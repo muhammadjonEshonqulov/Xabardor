@@ -13,5 +13,7 @@ data class RubricsData(
     val rght: Int?,
     val tree_id: Int?,
     val level: Int?,
-    val parent: String?
+    var expandable: Boolean = false,
+    val parent: String?,
+    var rubrics: ArrayList<RubricsData>? = null
 ):Serializable

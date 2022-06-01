@@ -1,10 +1,12 @@
 package uz.xabardor.ui.base
 
+import android.content.Context
 import android.content.res.Configuration
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
@@ -41,8 +43,9 @@ abstract class BaseActivity : MvpAppCompatActivity(), View.OnClickListener, NoCo
 
         toolBar = findViewById(R.id.tool_bar)
         setSupportActionBar(toolBar)
-
         languageManager = LanguageManager(this)
+
+//        notifyLanguageChanged()
 
         toolBarMenuImageView = findViewById(R.id.image_view_toolbar_menu)
         toolBarLogoImageView = findViewById(R.id.image_view_toolbar_logo)
@@ -61,11 +64,11 @@ abstract class BaseActivity : MvpAppCompatActivity(), View.OnClickListener, NoCo
         toolBarSearchImageView?.setOnClickListener(this)
         toolBarFavouriteImageView?.setOnClickListener(this)
         toolBarShareImageView?.setOnClickListener(this)
+//        toolBarTitleTextView?.setOnClickListener(this)
 
 
         setupToolbar()
         onCreatedView()
-        notifyLanguageChanged()
     }
 
     override fun onResume() {
@@ -79,6 +82,8 @@ abstract class BaseActivity : MvpAppCompatActivity(), View.OnClickListener, NoCo
             openNoConnectionActivity()
         }
     }
+
+
 
     abstract fun setupToolbar()
 
