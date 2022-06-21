@@ -1,0 +1,195 @@
+package uz.tima.xabardor.ui.news.list
+
+import android.util.Log
+import android.view.View
+import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import moxy.presenter.InjectPresenter
+import moxy.presenter.ProvidePresenter
+import uz.tima.xabardor.R
+import uz.tima.xabardor.extensions.language.Uzbek
+import uz.tima.xabardor.extensions.openBrowser
+import uz.tima.xabardor.extensions.openNewsActivity
+import uz.tima.xabardor.extensions.openNewsListActivity
+import uz.tima.xabardor.rest.models.Tag
+import uz.tima.xabardor.rest.models.news.News
+import uz.tima.xabardor.ui.base.BaseActivity
+import uz.tima.xabardor.ui.base.recyclerview.OnBottomScrolledListener
+import uz.tima.xabardor.ui.base.recyclerview.group.OnGroupRecyclerViewItemClickListener
+import uz.tima.xabardor.ui.base.recyclerview.group.model.RecyclerViewGroup
+import uz.tima.xabardor.ui.main.OnBannerOpenClickListener
+import uz.tima.xabardor.ui.main.OnMoreClickListener
+import uz.tima.xabardor.ui.main.OnTagClickListener
+
+class NewsListActivity : BaseActivity(), NewsListView, OnTagClickListener, OnMoreClickListener,
+    OnBottomScrolledListener, OnGroupRecyclerViewItemClickListener<News>, OnBannerOpenClickListener {
+
+    @InjectPresenter
+    lateinit var presenter: NewsListPresenter
+    var next:Long? = null
+    var total:Long? = null
+
+    @ProvidePresenter
+    fun providerPresenter() = NewsListPresenter().apply {
+        tag = this@NewsListActivity.tag
+        searchText = this@NewsListActivity.searchText
+    }
+
+    override val layoutId: Int
+        get() = R.layout.activity_news_list
+
+
+    lateinit var recyclerView: RecyclerView
+    lateinit var newsListAdapter: NewsListAdapter
+    lateinit var swipeRefreshLayout: SwipeRefreshLayout
+
+    lateinit var emptyTextView: TextView
+
+    override fun setupToolbar() {
+        tag?.let {
+            if (languageManager.currentLanguage.id == Uzbek().id){
+                toolBarTitleTextView?.setText(it.title)
+            } else {
+                toolBarTitleTextView?.setText(it.title_cyrl)
+            }
+        }
+
+        searchText?.let {
+            toolBarTitleTextView?.setText(it)
+        }
+    }
+
+    override fun onCreatedView() {
+        emptyTextView = findViewById(R.id.text_view_empty)
+        recyclerView = findViewById(R.id.recyclerview)
+
+
+
+
+        newsListAdapter = NewsListAdapter(recyclerView)
+        newsListAdapter.onMoreClickListener = this
+        newsListAdapter.language = languageManager.currentLanguage
+        newsListAdapter.onGroupRecyclerViewItemClickListener = this
+        newsListAdapter.onTagClickListener = this
+        newsListAdapter.onBannerOpenClickListener = this
+        newsListAdapter.onBottomScrolledListener = this
+
+        swipeRefreshLayout = findViewById(R.id.swiperefreshlayout)
+        swipeRefreshLayout.setOnRefreshListener {
+            presenter.refresh()
+        }
+
+    }
+
+    override fun onClick(p0: View?) {
+
+    }
+
+    override fun onItemClick(
+        recyclerView: RecyclerView,
+        elem: News,
+        group: RecyclerViewGroup<News>,
+        groupPosition: Int,
+        position: Int
+    ) {
+        openNewsActivity(elem)
+    }
+
+    override fun onOpenBanner(url: String) {
+        openBrowser(url)
+    }
+
+    override fun onBottomScrolled(recyclerView: RecyclerView) {
+//        if (next != null && total != null){
+//            if (total!! >= next!!){
+//                presenter.getNewsList()
+//            }
+//        }
+    }
+
+
+    override fun onTagClick(tag: Tag) {
+        openNewsListActivity(tag = tag)
+    }
+
+    override fun onLoadingNewsList() {
+        swipeRefreshLayout.isRefreshing = presenter.newsList.isEmpty()
+    }
+
+    override fun onErrorNewsList(throwable: Throwable) {
+        swipeRefreshLayout.isRefreshing = false
+    }
+
+    override fun onSuccessNewsList(next: Long?, totalPages: Long?) {
+
+        total = totalPages
+
+        this.next = next
+
+        swipeRefreshLayout.isRefreshing = false
+//        newsListAdapter.onSuccess(presenter.newsList)
+
+        var groups = listOf<RecyclerViewGroup<News>>()
+        groups = groups.plus(
+            RecyclerViewGroup(
+                items = presenter.newsList.filterIndexed { index, news -> index == 0 }
+            )
+        )
+
+        groups = groups.plus(
+            RecyclerViewGroup(
+                items = listOf(News.topBanner)
+            )
+        )
+
+        groups = groups.plus(
+            RecyclerViewGroup(
+                items = presenter.newsList.filterIndexed { index, news -> 1 <= index && index > 0 },next = presenter.next
+            )
+        )
+
+        groups = groups.plus(
+            RecyclerViewGroup(
+                items = listOf(News.bottomBanner)
+            )
+        )
+
+//        groups = groups.plus(
+//            RecyclerViewGroup(
+//                items = presenter.newsList.filterIndexed { index, news -> 4 < index }
+//            )
+//        )
+        newsListAdapter.adsenseTop = presenter.adsenseTopList
+        newsListAdapter.adsenseCenter = presenter.adsenseCenterList
+        newsListAdapter.onSuccess(groups)
+
+
+        if (presenter.newsList.isEmpty()) {
+            emptyTextView.visibility = View.VISIBLE
+        } else {
+            emptyTextView.visibility = View.INVISIBLE
+        }
+    }
+
+    val tag: Tag? get() = intent.getSerializableExtra(BUNDLE_TAG) as? Tag
+    val searchText: String? get() = intent.getStringExtra(BUNDLE_SEARCH_TEXT)
+
+    companion object {
+        val BUNDLE_TAG = "tag"
+        val BUNDLE_SEARCH_TEXT = "search_text"
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        recyclerView.adapter = null
+    }
+
+    override fun onMoreClick(groupPosition: Int) {
+        if (next != null && total != null){
+            if (total!! >= next!!){
+                presenter.getNewsList()
+            }
+        }
+    }
+}
