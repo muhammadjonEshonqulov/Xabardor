@@ -10,18 +10,18 @@ android {
     signingConfigs {
         playStoreConfig {
             storeFile file('C:\\Users\\Muhammad\\AndroidStudioProjects\\Xabardor\\Xabardor.jks')
-            storePassword 'Xabardor'
-            keyAlias 'keys0'
-            keyPassword 'Xabardor'
+            storePassword 'UzTimXabardor'
+            keyAlias 'keyUzTim0'
+            keyPassword 'UzTimXabardor'
         }
     }
-    compileSdkVersion 32
+    compileSdkVersion 33
     defaultConfig {
-        applicationId "uz.xabardor"
-        minSdkVersion 19
-        targetSdkVersion 32
-        versionCode 6
-        versionName "1.0.5"
+        applicationId "uz.tima.xabardor"
+        minSdkVersion 21
+        targetSdkVersion 33
+        versionCode 1
+        versionName "1.0.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }

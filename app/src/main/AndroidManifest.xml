@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="uz.xabardor" >
+    package="uz.tima.xabardor" >
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -12,7 +12,7 @@
     </queries>
 
     <application
-        android:name=".app.App"
+        android:name="uz.tima.xabardor.app.App"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -23,7 +23,7 @@
 
 
         <activity
-            android:name=".ui.splash.SplashActivity"
+            android:name="uz.tima.xabardor.ui.splash.SplashActivity"
             android:exported="true"
             android:screenOrientation="portrait" >
             <intent-filter>
@@ -33,36 +33,36 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.main.MainActivity"
+            android:name="uz.tima.xabardor.ui.main.MainActivity"
             android:exported="true"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.video.VideoActivity"
+            android:name="uz.tima.xabardor.ui.video.VideoActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.video.VideoFullScreenActivity"
+            android:name="uz.tima.xabardor.ui.video.VideoFullScreenActivity"
             android:screenOrientation="landscape"
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
         <activity
-            android:name=".ui.news.NewsActivity"
+            android:name="uz.tima.xabardor.ui.news.NewsActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.news.list.NewsListActivity"
+            android:name="uz.tima.xabardor.ui.news.list.NewsListActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.about.AboutUsAcitivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.contact.ContactUsActivity"
+            android:name="uz.tima.xabardor.ui.contact.ContactUsActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.news.favourites.FavouritesActivity"
+            android:name="uz.tima.xabardor.ui.news.favourites.FavouritesActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.news.author.AuthorActivity"
+            android:name="uz.tima.xabardor.ui.news.author.AuthorActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.no_connection.NoConnectionActivity"
+            android:name="uz.tima.xabardor.ui.no_connection.NoConnectionActivity"
             android:screenOrientation="portrait" />
     </application>
 
