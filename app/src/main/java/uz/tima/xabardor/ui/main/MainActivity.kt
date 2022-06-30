@@ -2,8 +2,10 @@ package uz.tima.xabardor.ui.main
 
 import uz.tima.xabardor.rest.models.WeathersAppResponse
 import android.content.Context
+import android.content.Intent
 import android.content.res.ColorStateList
 import android.os.Build
+import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.Gravity
@@ -16,6 +18,13 @@ import androidx.core.content.ContextCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.google.android.material.snackbar.Snackbar
+import com.google.android.play.core.appupdate.AppUpdateManager
+import com.google.android.play.core.appupdate.AppUpdateManagerFactory
+import com.google.android.play.core.install.InstallStateUpdatedListener
+import com.google.android.play.core.install.model.AppUpdateType
+import com.google.android.play.core.install.model.InstallStatus
+import com.google.android.play.core.install.model.UpdateAvailability
 import moxy.presenter.InjectPresenter
 import uz.tima.xabardor.R
 import uz.tima.xabardor.database.TagDatabase
@@ -71,6 +80,9 @@ class MainActivity : BaseActivity(), MainView, OnItemClickListener<RubricsData>,
     lateinit var rubric_name: TextView
     lateinit var favouritesTextView: TextView
     lateinit var actualTheme: TextView
+
+    private var appUpdateManager: AppUpdateManager? = null
+    private val APP_UPDATE = 100
 
     override fun setupToolbar() {
         toolBarBackImageView?.visibility = View.INVISIBLE
@@ -184,6 +196,49 @@ class MainActivity : BaseActivity(), MainView, OnItemClickListener<RubricsData>,
                 }
             }
         drawerAdapter.onSuccess(rubrics)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        if (appUpdateManager == null) {
+            appUpdateManager = AppUpdateManagerFactory.create(this)
+        }
+
+        appUpdateManager?.appUpdateInfo?.addOnSuccessListener {
+            if (it.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE && it.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE)) {
+                appUpdateManager?.startUpdateFlowForResult(it, AppUpdateType.FLEXIBLE, this, APP_UPDATE)
+            }
+        }
+        appUpdateManager?.registerListener(installStateUpdatedListener)
+
+    }
+
+    private val installStateUpdatedListener = InstallStateUpdatedListener {
+        if (it.installStatus() == InstallStatus.DOWNLOADED) {
+            showCompletedUpdate()
+        }
+    }
+
+    private fun showCompletedUpdate() {
+        val snackbar = Snackbar.make(recyclerView, getString(R.string.read_to_install), Snackbar.LENGTH_INDEFINITE)
+        snackbar.setAction(getString(R.string.install)) {
+            appUpdateManager?.completeUpdate()
+        }
+        snackbar.show()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == APP_UPDATE && resultCode != RESULT_OK) {
+            Toast.makeText(this, getString(R.string.cancelled_intall), Toast.LENGTH_SHORT).show()
+        }
+        super.onActivityResult(requestCode, resultCode, data)
+    }
+
+    override fun onStop() {
+        if (appUpdateManager != null) {
+            appUpdateManager?.unregisterListener(installStateUpdatedListener)
+        }
+        super.onStop()
 
     }
 

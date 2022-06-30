@@ -12,4 +12,7 @@
     <string name="search">Қидириш</string>
     <string name="day">Кундузи</string>
     <string name="night">Кечаси</string>
+    <string name="install">Ўрнатиш</string>
+    <string name="read_to_install">Илова янгилашга тайёр</string>
+    <string name="cancelled_intall">\"Илова янгиланиши кейинроққа қолдирилди \"</string>
 </resources>

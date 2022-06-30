@@ -297,9 +297,12 @@ class MainAdapter(recyclerView: RecyclerView) :
                 adsense_image_view_center.visibility = View.GONE
                 adsense_image_view_bottom.visibility = View.GONE
                 glide.clear(adsense_image_view_top)
-                glide
-                    .load(adsenseTop?.get(0)?.photo)
-                    .into(adsense_image_view_top)
+                adsenseTop?.get(0)?.photo?.let {
+
+                    glide
+                        .load(it)
+                        .into(adsense_image_view_top)
+                }
             } else if (groupPosition == 3 && groups.size > 3){
                 val glide = Glide.with(recyclerView.context)
                 adsense_image_view_center.adjustViewBounds = true

@@ -9,7 +9,7 @@ apply plugin: 'com.google.firebase.crashlytics'
 android {
     signingConfigs {
         playStoreConfig {
-            storeFile file('C:\\Users\\Muhammad\\AndroidStudioProjects\\Xabardor\\Xabardor.jks')
+            storeFile file('C:\\Users\\ACER\\StudioProjects\\Xabardor\\Xabardor.jks')
             storePassword 'UzTimXabardor'
             keyAlias 'keyUzTim0'
             keyPassword 'UzTimXabardor'
@@ -20,8 +20,8 @@ android {
         applicationId "uz.tima.xabardor"
         minSdkVersion 21
         targetSdkVersion 33
-        versionCode 1
-        versionName "1.0.0"
+        versionCode 3
+        versionName "1.0.3"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
@@ -118,4 +118,6 @@ dependencies {
     implementation 'com.pierfrancescosoffritti.androidyoutubeplayer:core:11.0.1'
     implementation 'androidx.work:work-runtime-ktx:2.7.1'
 
+    // play updater
+    implementation "com.google.android.play:app-update-ktx:2.0.0"
 }

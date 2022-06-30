@@ -13,4 +13,7 @@
     <string name="search">Qidirish</string>
     <string name="day">Kunduzi</string>
     <string name="night">Kechasi</string>
+    <string name="install">O\'rnatish</string>
+    <string name="read_to_install">Ilova yangilashga tayyor</string>
+    <string name="cancelled_intall">\"Ilova yangilanishi keyinroqqa qoldirildi \"</string>
 </resources>
