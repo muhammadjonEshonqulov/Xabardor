@@ -1,11 +1,15 @@
 package uz.tima.xabardor.rest.services
 
+import com.chuckerteam.chucker.api.ChuckerCollector
+import com.chuckerteam.chucker.api.ChuckerInterceptor
 import okhttp3.ConnectionSpec
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import uz.tima.xabardor.BuildConfig
+import uz.tima.xabardor.app.App
 import uz.tima.xabardor.rest.Api
 import java.math.BigInteger
 import java.security.MessageDigest
@@ -28,11 +32,9 @@ open class BaseService {
             .connectTimeout(50000L, TimeUnit.MILLISECONDS)
             .readTimeout(50000L, TimeUnit.MILLISECONDS)
             .writeTimeout(50000L, TimeUnit.MILLISECONDS)
-//        if (BuildConfig.isDebug) {
-//            builder.addInterceptor(ChuckerInterceptor.Builder(App.context).collector(
-//                ChuckerCollector(App.context)
-//            ).build())
-//        }
+        if (BuildConfig.isDebug) {
+            builder.addInterceptor(ChuckerInterceptor.Builder(App.context).collector(ChuckerCollector(App.context)).build())
+        }
         var client = builder.build()
 
         var retrofit = Retrofit.Builder()
