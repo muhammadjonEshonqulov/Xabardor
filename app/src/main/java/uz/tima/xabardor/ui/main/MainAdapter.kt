@@ -1,5 +1,6 @@
 package uz.tima.xabardor.ui.main
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,6 +16,7 @@ import uz.tima.xabardor.R
 import uz.tima.xabardor.extensions.dpToPx
 import uz.tima.xabardor.extensions.language.Krill
 import uz.tima.xabardor.extensions.language.Language
+import uz.tima.xabardor.extensions.language.LanguageManager
 import uz.tima.xabardor.extensions.language.Uzbek
 import uz.tima.xabardor.extensions.lg
 import uz.tima.xabardor.rest.models.Adsense
@@ -27,15 +29,15 @@ import uz.tima.xabardor.ui.base.recyclerview.group.BaseGroupRecyclerViewHolder
 import uz.tima.xabardor.ui.base.recyclerview.group.model.RecyclerViewGroup
 
 class MainAdapter(recyclerView: RecyclerView) :
-        BaseGroupRecyclerViewAdapter<News, BaseGroupRecyclerViewHolder<News>>(recyclerView) {
+    BaseGroupRecyclerViewAdapter<News, BaseGroupRecyclerViewHolder<News>>(recyclerView) {
 
     var onTagClickListener: OnTagClickListener? = null
     var onBannerOpenClickListener: OnBannerOpenClickListener? = null
-    var onMoreClickListener:OnMoreClickListener? = null
-    var adsenseTop : List<Adsense>? = null
-    var adsenseCenter : List<Adsense>? = null
-    var adsenseAfterTrendList : List<Adsense>? = null
-    lateinit var language:Language
+    var onMoreClickListener: OnMoreClickListener? = null
+    var adsenseTop: List<Adsense>? = null
+    var adsenseCenter: List<Adsense>? = null
+    var adsenseAfterTrendList: List<Adsense>? = null
+    lateinit var language: Language
     var selected = ""
 
     override fun getItemViewType(elem: News, group: RecyclerViewGroup<News>, groupPosition: Int, position: Int): Int {
@@ -68,16 +70,16 @@ class MainAdapter(recyclerView: RecyclerView) :
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseGroupRecyclerViewHolder<News> =
-            when (viewType) {
-                VIEW_TYPE_LARGE -> LargeHolder(parent)
-                VIEW_TYPE_LITTLE -> LargeHolder(parent)
-                VIEW_TYPE_BANNER -> BannerHolder(parent)
-                else -> LargeHolder(parent)
-            }
+        when (viewType) {
+            VIEW_TYPE_LARGE -> LargeHolder(parent)
+            VIEW_TYPE_LITTLE -> LargeHolder(parent)
+            VIEW_TYPE_BANNER -> BannerHolder(parent)
+            else -> LargeHolder(parent)
+        }
 
 
     inner class LargeHolder(parent: ViewGroup) :
-            BaseGroupRecyclerViewHolder<News>(parent, R.layout.item_recyclerview_news_large) {
+        BaseGroupRecyclerViewHolder<News>(parent, R.layout.item_recyclerview_news_large) {
 
         val imageView: ImageView = itemView.findViewById(R.id.image_view)
         val tagContainerLayout: TagContainerLayout = itemView.findViewById(R.id.tag_container_layout)
@@ -93,19 +95,19 @@ class MainAdapter(recyclerView: RecyclerView) :
         override fun bind(elem: News, group: RecyclerViewGroup<News>, groupPosition: Int, position: Int) {
             val more_list_item = itemView.findViewById<CardView>(R.id.more_list_item)
 
-            if ((position + 1) % group.items.size == 0 && groupPosition != 0 && group.next != null && selected == ""){
-                if (groups.size == 4){
+            if ((position + 1) % group.items.size == 0 && groupPosition != 0 && group.next != null && selected == "") {
+                if (groups.size == 4) {
                     more_list_item.visibility = View.VISIBLE
                     more_list_item.setOnClickListener {
                         onMoreClickListener?.onMoreClick(groupPosition)
                     }
                 } else {
-                    if (groupPosition != 2){
+                    if (groupPosition != 2) {
                         more_list_item.visibility = View.VISIBLE
                         more_list_item.setOnClickListener {
                             onMoreClickListener?.onMoreClick(groupPosition)
                         }
-                    } else{
+                    } else {
                         more_list_item.visibility = View.GONE
                     }
                 }
@@ -117,16 +119,16 @@ class MainAdapter(recyclerView: RecyclerView) :
             val glide = Glide.with(recyclerView.context)
             glide.clear(imageView)
             glide
-                    .load(elem.image.thumb)
-                    .into(imageView)
-            if (language.id == Krill().id){
+                .load(elem.image.thumb)
+                .into(imageView)
+            if (language.id == Krill().id) {
                 elem.title_cyrl?.let {
                     titleTextView.setText(it)
                 }
                 elem.description_cyrl?.let {
                     descriptionTextView.setText(it)
                 }
-            } else if (language.id == Uzbek().id){
+            } else if (language.id == Uzbek().id) {
                 elem.title?.let {
                     titleTextView.setText(it)
                 }
@@ -138,7 +140,7 @@ class MainAdapter(recyclerView: RecyclerView) :
 
             elem.tags?.let { tags ->
                 tagContainerLayout.setTags(tags.map {
-                    if (language.id == Uzbek().id){
+                    if (language.id == Uzbek().id) {
                         it.title?.let {
                             "#${it}"
                         }
@@ -165,7 +167,7 @@ class MainAdapter(recyclerView: RecyclerView) :
                 override fun onTagClick(position: Int, text: String?) {
                     text?.let { str ->
                         elem.tags?.find {
-                            if (language.id == Uzbek().id){
+                            if (language.id == Uzbek().id) {
                                 "#${it.title}" == str
                             } else {
                                 "#${it.title_cyrl}" == str
@@ -182,14 +184,21 @@ class MainAdapter(recyclerView: RecyclerView) :
             })
         }
 
+        @SuppressLint("SetTextI18n")
         override fun getHeaderView(group: RecyclerViewGroup<News>, groupPosition: Int): View {
 
-                if (groupPosition == 2 && group.items.size == 10) {
+            if (groupPosition == 2 && group.items.size == 10) {
                 val header = LayoutInflater.from(itemView.context).inflate(R.layout.header_actual, null, false)
-                header.findViewById<TextView>(R.id.title_header).text = header.context.getString(R.string.last_news)
+                itemView.context?.let {
+                    val language = LanguageManager(it).currentLanguage
+                    if (language.id == Uzbek().id) {
+                        header.findViewById<TextView>(R.id.title_header).text = "So'nggi yangiliklar"
+                    } else if (language.id == Krill().id) {
+                        header.findViewById<TextView>(R.id.title_header).text = "Сўнгги янгиликлар"
+                    }
+                }
                 return header
-            }
-            else if (groupPosition != 0) {
+            } else if (groupPosition != 0) {
                 val view = View(itemView.context)
                 view.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 24.dpToPx())
                 view.setBackgroundResource(R.color.colorPrimary)
@@ -263,9 +272,9 @@ class MainAdapter(recyclerView: RecyclerView) :
 
 
     inner class BannerHolder(parent: ViewGroup) :
-            BaseGroupRecyclerViewHolder<News>(parent, R.layout.item_recyclerview_banner) {
+        BaseGroupRecyclerViewHolder<News>(parent, R.layout.item_recyclerview_banner) {
 
-//        val webView: WebView = itemView.findViewById(R.id.web_view)
+        //        val webView: WebView = itemView.findViewById(R.id.web_view)
         val textView: TextView = itemView.findViewById(R.id.adsense_text_view_title)
         val adsense_image_view_top: ImageView = itemView.findViewById(R.id.adsense_image_view_top)
         val adsense_image_view_center: ImageView = itemView.findViewById(R.id.adsense_image_view_center)
@@ -289,7 +298,7 @@ class MainAdapter(recyclerView: RecyclerView) :
         }
 
         override fun bind(elem: News, group: RecyclerViewGroup<News>, groupPosition: Int, position: Int) {
-            if (groupPosition == 1 && groups.size > 3){
+            if (groupPosition == 1 && groups.size > 3) {
 
                 val glide = Glide.with(recyclerView.context)
                 adsense_image_view_top.adjustViewBounds = true
@@ -303,7 +312,7 @@ class MainAdapter(recyclerView: RecyclerView) :
                         .load(it)
                         .into(adsense_image_view_top)
                 }
-            } else if (groupPosition == 3 && groups.size > 3){
+            } else if (groupPosition == 3 && groups.size > 3) {
                 val glide = Glide.with(recyclerView.context)
                 adsense_image_view_center.adjustViewBounds = true
                 adsense_image_view_top.visibility = View.GONE
@@ -313,8 +322,7 @@ class MainAdapter(recyclerView: RecyclerView) :
                 glide
                     .load(adsenseCenter?.get(0)?.photo)
                     .into(adsense_image_view_center)
-            }
-            else if (groupPosition == 5){
+            } else if (groupPosition == 5) {
                 val glide = Glide.with(recyclerView.context)
                 adsense_image_view_center.adjustViewBounds = true
                 adsense_image_view_top.visibility = View.GONE
@@ -336,7 +344,7 @@ class MainAdapter(recyclerView: RecyclerView) :
                     .into(adsense_image_view_top)
             }
             adsense_item_back.setOnClickListener {
-                if (elem.isTopBanner){
+                if (elem.isTopBanner) {
                     adsenseTop?.get(0)?.link?.let {
                         onBannerOpenClickListener?.onOpenBanner(it)
                     }
@@ -361,6 +369,7 @@ class MainAdapter(recyclerView: RecyclerView) :
 interface OnTagClickListener {
     fun onTagClick(tag: Tag)
 }
+
 interface OnMoreClickListener {
     fun onMoreClick(groupPosition: Int)
 }

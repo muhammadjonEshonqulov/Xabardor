@@ -19,3 +19,5 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+#-keepattributes  class uz.tima.xabardor.rest.models.**{*;}
+#-renamesourcefileattribute   class uz.tima.xabardor.rest.models.**{*;}

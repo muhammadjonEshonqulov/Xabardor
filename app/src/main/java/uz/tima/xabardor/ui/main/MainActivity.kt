@@ -1,5 +1,6 @@
 package uz.tima.xabardor.ui.main
 
+import android.annotation.SuppressLint
 import uz.tima.xabardor.rest.models.WeathersAppResponse
 import android.content.Context
 import android.content.Intent
@@ -43,8 +44,9 @@ import uz.tima.xabardor.ui.base.recyclerview.OnItemClickListener
 import uz.tima.xabardor.ui.base.recyclerview.group.OnGroupRecyclerViewItemClickListener
 import uz.tima.xabardor.ui.base.recyclerview.group.model.RecyclerViewGroup
 import uz.tima.xabardor.extensions.openNewsListActivity as openNewsListActivity1
-class MainActivity : BaseActivity(), MainView, OnItemClickListener<RubricsData>,OnMoreClickListener,
-        OnGroupRecyclerViewItemClickListener<News>,DrawerAdapter.OnItemClickListener, OnTagClickListener, OnBottomScrolledListener,
+
+class MainActivity : BaseActivity(), MainView, OnItemClickListener<RubricsData>, OnMoreClickListener,
+    OnGroupRecyclerViewItemClickListener<News>, DrawerAdapter.OnItemClickListener, OnTagClickListener, OnBottomScrolledListener,
     OnBannerOpenClickListener {
 
     @InjectPresenter
@@ -53,7 +55,7 @@ class MainActivity : BaseActivity(), MainView, OnItemClickListener<RubricsData>,
     override val layoutId: Int
         get() = R.layout.activity_main
 
-    lateinit var prefss:Prefss
+    lateinit var prefss: Prefss
     lateinit var language: Language
 
     lateinit var drawerLayout: DrawerLayout
@@ -61,14 +63,16 @@ class MainActivity : BaseActivity(), MainView, OnItemClickListener<RubricsData>,
 
     lateinit var drawerRecyclerView: RecyclerView
     lateinit var drawerAdapter: DrawerAdapter
-    var weatherAdapter : WeatherAdapter? = null
+    var weatherAdapter: WeatherAdapter? = null
     lateinit var logo_main: ImageView
-//    lateinit var rubricsAdapter : RubricsAdapter
+
+    //    lateinit var rubricsAdapter : RubricsAdapter
     lateinit var languageUzbek: LinearLayout
     lateinit var languageKrill: LinearLayout
 
     lateinit var recyclerView: RecyclerView
-//    lateinit var recyclerViewRubrics: RecyclerView
+
+    //    lateinit var recyclerViewRubrics: RecyclerView
     lateinit var mainAdapter: MainAdapter
     lateinit var swipeRefreshLayout: SwipeRefreshLayout
 
@@ -111,7 +115,6 @@ class MainActivity : BaseActivity(), MainView, OnItemClickListener<RubricsData>,
         toolBarLogoImageView?.setOnClickListener(this)
     }
 
-    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onCreatedView() {
         prefss = Prefss(this)
         drawerLayout = findViewById(R.id.drawer_layout)
@@ -125,13 +128,13 @@ class MainActivity : BaseActivity(), MainView, OnItemClickListener<RubricsData>,
         rubric_name = findViewById(R.id.rubric_name)
         languageKrill = findViewById(R.id.language_krill)
 
-        if (languageManager.currentLanguage.id == Uzbek().id){
+        if (languageManager.currentLanguage.id == Uzbek().id) {
             languageUzbek.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(this, R.color.colorPrimary))
             languageKrill.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(this, R.color.colorWhite))
-        } else if (languageManager.currentLanguage.id == Krill().id){
+        } else if (languageManager.currentLanguage.id == Krill().id) {
             languageKrill.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(this, R.color.colorPrimary))
             languageUzbek.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(this, R.color.colorWhite))
-            }
+        }
 
         drawerAdapter = DrawerAdapter(drawerRecyclerView)
         drawerAdapter.language = languageManager.currentLanguage
@@ -170,7 +173,7 @@ class MainActivity : BaseActivity(), MainView, OnItemClickListener<RubricsData>,
 
         swipeRefreshLayout.setOnRefreshListener {
             if (rubric_name.text == getString(R.string.actual_theme))
-            rubric_name.visibility = View.GONE
+                rubric_name.visibility = View.GONE
             mainAdapter.onSuccess(listOf())
             groups.clear()
             presenter.refresh()
@@ -181,21 +184,33 @@ class MainActivity : BaseActivity(), MainView, OnItemClickListener<RubricsData>,
         val rubrics = ArrayList<RubricsData>()
         TagDatabase.mainRubrics.let {
             it.forEachIndexed { index, rubricsData ->
-                   if (rubricsData.parent.isNullOrEmpty()){
-                       rubrics.add(rubricsData)
-                   } else {
-                       rubrics.forEachIndexed { index2, rubricsData2 ->
-                           if (rubricsData.parent.toInt() == rubricsData2.id){
-                               if(rubricsData2.rubrics == null){
-                                   rubricsData2.rubrics = ArrayList()
-                               }
-                               rubrics.get(index2).rubrics?.add(rubricsData)
-                           }
-                       }
-                   }
+                if (rubricsData.parent.isNullOrEmpty()) {
+                    rubrics.add(rubricsData)
+                } else {
+                    rubrics.forEachIndexed { index2, rubricsData2 ->
+                        if (rubricsData.parent.toInt() == rubricsData2.id) {
+                            if (rubricsData2.rubrics == null) {
+                                rubricsData2.rubrics = ArrayList()
+                            }
+                            rubrics.get(index2).rubrics?.add(rubricsData)
+                        }
+                    }
                 }
             }
+        }
         drawerAdapter.onSuccess(rubrics)
+
+        if (appUpdateManager == null) {
+            appUpdateManager = AppUpdateManagerFactory.create(this)
+        }
+
+        appUpdateManager?.appUpdateInfo?.addOnSuccessListener {
+            lg("it.updateAvailability() ->" + it.updateAvailability())
+            if (it.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE && it.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE)) {
+                appUpdateManager?.startUpdateFlowForResult(it, AppUpdateType.FLEXIBLE, this, APP_UPDATE)
+            }
+        }
+        appUpdateManager?.registerListener(installStateUpdatedListener)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -242,7 +257,6 @@ class MainActivity : BaseActivity(), MainView, OnItemClickListener<RubricsData>,
 
     }
 
-    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onClick(view: View?) {
         when (view) {
             toolBarMenuImageView -> {
@@ -280,8 +294,8 @@ class MainActivity : BaseActivity(), MainView, OnItemClickListener<RubricsData>,
                 drawerLayout.closeDrawer(Gravity.LEFT)
             }
             toolBarSearchImageView -> {
-                if (toolBarSearchEditText?.isFocused == true){
-                    if (toolBarSearchEditText?.text.toString().trim().isNotEmpty()){
+                if (toolBarSearchEditText?.isFocused == true) {
+                    if (toolBarSearchEditText?.text.toString().trim().isNotEmpty()) {
                         performSearch(toolBarSearchEditText?.text.toString().trim())
                     }
                 } else {
@@ -328,16 +342,11 @@ class MainActivity : BaseActivity(), MainView, OnItemClickListener<RubricsData>,
             }
             languageKrill -> {
                 language = Krill()
-                prefss.save(prefss.language, Language.UZ)
+                prefss.save(prefss.language, Language.KR)
                 languageManager.currentLanguage = language
                 languageKrill.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(this, R.color.colorPrimary))
                 languageUzbek.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(this, R.color.colorWhite))
-                notifyLanguageChanged()
-//                contactTextView.text = "Биз билан алоқа"
-//                aboutTextView.text = "Биз ҳақимизда"
-//                favouritesTextView.text = "Танланган мақолалар"
-//                actualTheme.text = "Энг кўп ўқилганлар"
-//                toolBarSearchEditText?.hint = "Қидириш"
+                onCreateLanguage(language)
                 mainAdapter.language = language
                 mainAdapter.notifyDataSetChanged()
                 drawerAdapter.language = language
@@ -347,12 +356,12 @@ class MainActivity : BaseActivity(), MainView, OnItemClickListener<RubricsData>,
             }
             languageUzbek -> {
                 language = Uzbek()
-                prefss.save(prefss.language, Language.KR)
+                prefss.save(prefss.language, Language.UZ)
                 languageManager.currentLanguage = language
-                notifyLanguageChanged()
+                onCreateLanguage(language)
                 languageUzbek.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(this, R.color.colorPrimary))
                 languageKrill.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(this, R.color.colorWhite))
-                notifyLanguageChanged()
+                onCreateLanguage(language)
                 mainAdapter.language = language
                 mainAdapter.notifyDataSetChanged()
                 drawerAdapter.language = language
@@ -363,15 +372,34 @@ class MainActivity : BaseActivity(), MainView, OnItemClickListener<RubricsData>,
         }
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onCreateLanguage(language: Language) {
         super.onCreateLanguage(language)
-        contactTextView.text = getString(R.string.contact_us)
-        aboutTextView.text = getString(R.string.about_us)
-        favouritesTextView.text = getString(R.string.favourites)
-        actualTheme.text = getString(R.string.actual_theme)
-        toolBarSearchEditText?.hint = getString(R.string.search)
-        dayText.text = getString(R.string.day)
-        nightText.text = getString(R.string.night)
+        if (language.id == Uzbek().id) {
+            contactTextView.text = "Biz bilan aloqa"
+            aboutTextView.text = "Biz haqimizda"
+            favouritesTextView.text = "Tanlangan maqolalar"
+            actualTheme.text = "Eng ko'p o'qilganlar"
+            toolBarSearchEditText?.hint = "Qidirish"
+            dayText.text = "Kunduzi"
+            nightText.text = "Kechasi"
+        } else if (language.id == Krill().id) {
+            contactTextView.text = "Биз билан алоқа"
+            aboutTextView.text = "Биз ҳақимизда"
+            favouritesTextView.text = "Танланган мақолалар"
+            actualTheme.text = "Энг кўп ўқилганлар"
+            toolBarSearchEditText?.hint = "Қидириш"
+            dayText.text = "Кундузи"
+            nightText.text = "Кечаси"
+        }
+
+//        contactTextView.text = getString(R.string.contact_us)
+//        aboutTextView.text = getString(R.string.about_us)
+//        favouritesTextView.text = getString(R.string.favourites)
+//        actualTheme.text = getString(R.string.actual_theme)
+//        toolBarSearchEditText?.hint = getString(R.string.search)
+//        dayText.text = getString(R.string.day)
+//        nightText.text = getString(R.string.night)
     }
 
     override fun onItemClick(recyclerView: RecyclerView, item: RubricsData, position: Int) {
@@ -422,9 +450,9 @@ class MainActivity : BaseActivity(), MainView, OnItemClickListener<RubricsData>,
         swipeRefreshLayout.isRefreshing = false
     }
 
-    override fun onSuccessNewsList(tag:String?) {
+    override fun onSuccessNewsList(tag: String?) {
 //        var groups = listOf<RecyclerViewGroup<News>>()
-        if (tag == "last"){
+        if (tag == "last") {
             groups.add(
                 RecyclerViewGroup(
                     items = presenter.mainNewsList.filterIndexed { index, news -> index == 0 }
@@ -448,7 +476,7 @@ class MainActivity : BaseActivity(), MainView, OnItemClickListener<RubricsData>,
                 )
             )
             mainAdapter.selected = ""
-        } else if (tag == "selected" ){
+        } else if (tag == "selected") {
             groups.add(
                 RecyclerViewGroup(
                     items = presenter.actualNewsList.filterIndexed { index, news -> index == 0 }
@@ -526,15 +554,15 @@ class MainActivity : BaseActivity(), MainView, OnItemClickListener<RubricsData>,
         weatherAdapter = WeatherAdapter(this, regions)
         val spinner_weather = findViewById<Spinner>(R.id.spinner_weather)
         spinner_weather.adapter = weatherAdapter
-        spinner_weather.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+        spinner_weather.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
                 parent: AdapterView<*>?,
                 view: View?,
                 position: Int,
                 id: Long
             ) {
-                findViewById<TextView>(R.id.weather_night).text = ""+regions.get(position).night+"°"
-                findViewById<TextView>(R.id.weather_day).text = ""+regions.get(position).day+"°"
+                findViewById<TextView>(R.id.weather_night).text = "" + regions.get(position).night + "°"
+                findViewById<TextView>(R.id.weather_day).text = "" + regions.get(position).day + "°"
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -543,9 +571,9 @@ class MainActivity : BaseActivity(), MainView, OnItemClickListener<RubricsData>,
 
         }
         var text = ""
-        for (i in 0..2){
-            text += if(list.get(i).Ccy == "USD") " $ " else if(list.get(i).Ccy == "EUR") " € " else if(list.get(i).Ccy == "RUB") " ₽ " else "  "
-            text += "  "+list.get(i).Rate + if(list.get(i).Diff?.toFloat()!! < i) "  UZS  \uD83D\uDD3B "+list.get(i).Diff +"  " else "  \uD83D\uDD3C "+list.get(i).Diff+"   "
+        for (i in 0..2) {
+            text += if (list.get(i).Ccy == "USD") " $ " else if (list.get(i).Ccy == "EUR") " € " else if (list.get(i).Ccy == "RUB") " ₽ " else "  "
+            text += "  " + list.get(i).Rate + if (list.get(i).Diff?.toFloat()!! < i) "  UZS  \uD83D\uDD3B " + list.get(i).Diff + "  " else "  \uD83D\uDD3C " + list.get(i).Diff + "   "
         }
         exchange.text = text
         exchange.isSelected = true
@@ -553,19 +581,19 @@ class MainActivity : BaseActivity(), MainView, OnItemClickListener<RubricsData>,
 
     }
 
-//    override fun onSuccessTopWeatherAndExchanges(list: List<ExchangeRatesData>, list1: WeatherResponse) {
+    //    override fun onSuccessTopWeatherAndExchanges(list: List<ExchangeRatesData>, list1: WeatherResponse) {
 //        exchange.text = "$ "+list.get(0).Rate + if(list.get(0).Diff?.toInt()!! < 0) "\uD83D\uDD3D" else "\uD83D\uDD3C "+list.get(0).Diff
 //    }
     override fun onSuccessMore(data: List<News>, groupPosition: Int) {
 //        groups.get(groupPosition).items = data
-    if (groupPosition == 2)
-         groups.add(
-        RecyclerViewGroup(
-            items = presenter.latestNewsList.toList().sortedBy { it.published_at }, next = presenter.nextNews
-           )
-         )
-    else
-        groups.get(groupPosition).items = data
+        if (groupPosition == 2)
+            groups.add(
+                RecyclerViewGroup(
+                    items = presenter.latestNewsList.toList().sortedBy { it.published_at }, next = presenter.nextNews
+                )
+            )
+        else
+            groups.get(groupPosition).items = data
         mainAdapter.onSuccess(groups)
 
     }
@@ -575,7 +603,7 @@ class MainActivity : BaseActivity(), MainView, OnItemClickListener<RubricsData>,
     }
 
     override fun onItemClick(position: Int, data: RubricsData) {
-        if (position == -1){
+        if (position == -1) {
             drawerLayout.closeDrawer(Gravity.LEFT)
             Handler(Looper.getMainLooper()).postDelayed({
 //            openNewsListActivity1(
@@ -593,9 +621,9 @@ class MainActivity : BaseActivity(), MainView, OnItemClickListener<RubricsData>,
             }, 200)
 
             rubric_name.visibility = View.VISIBLE
-            if (languageManager.currentLanguage.id == Uzbek().id){
+            if (languageManager.currentLanguage.id == Uzbek().id) {
                 rubric_name.text = data.title?.capitalize()
-            } else if (languageManager.currentLanguage.id == Krill().id){
+            } else if (languageManager.currentLanguage.id == Krill().id) {
                 rubric_name.text = data.title_cyrl?.capitalize()
             }
         } else {
@@ -610,18 +638,8 @@ class MainActivity : BaseActivity(), MainView, OnItemClickListener<RubricsData>,
     }
 
     override fun onMoreClick(groupPosition: Int) {
-//        when (groupPosition) {
-////            2 -> {
-////                presenter.getMainNewsList(groupPosition)
-////            }
-////            4 -> {
-////                presenter.getActualNewsList(groupPosition)
-////            }
-//            2 -> {
-                presenter.getNewsList(presenter.type, presenter.tag, groupPosition = groupPosition )
-//            }
-//        }
+
+        presenter.getNewsList(presenter.type, presenter.tag, groupPosition = groupPosition)
+
     }
 }
-
-

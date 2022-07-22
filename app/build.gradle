@@ -18,28 +18,26 @@ android {
     compileSdkVersion 33
     defaultConfig {
         applicationId "uz.tima.xabardor"
-        minSdkVersion 21
+        minSdkVersion 23
         targetSdkVersion 33
-        versionCode 4
-        versionName "1.0.4"
+        versionCode 8// 4
+        versionName "1.0.8" //
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
-        release {
-            buildConfigField "Boolean", "isDebug", "false"
+        debug {
+            buildConfigField "Boolean", "isDebug", "true"
             multiDexEnabled true
-//            shrinkResources true
-//            minifyEnabled true
             signingConfig signingConfigs.playStoreConfig
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
-        debug {
-//            buildConfigField "String", "BASE_URL", "\"URL\""
-            buildConfigField "Boolean", "isDebug", "true"
+        release {
+            buildConfigField "Boolean", "isDebug", "false"
             multiDexEnabled true
-
+            signingConfig signingConfigs.playStoreConfig
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+
         }
     }
     compileOptions {
@@ -93,7 +91,7 @@ dependencies {
     //firebase crashlytics
     implementation 'com.google.firebase:firebase-core:21.0.0'
     implementation 'com.google.firebase:firebase-analytics:21.0.0'
-    implementation 'com.google.firebase:firebase-crashlytics:18.2.10'
+    implementation 'com.google.firebase:firebase-crashlytics:18.2.11'
 
 // Swiperefreshlayout
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
@@ -101,7 +99,7 @@ dependencies {
     // prdownloader
     implementation 'com.mindorks.android:prdownloader:0.6.0'
 
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.1")
 
     //exoplayer
     def exo_version = "2.13.3"

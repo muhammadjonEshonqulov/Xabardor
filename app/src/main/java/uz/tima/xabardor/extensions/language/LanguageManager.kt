@@ -18,7 +18,7 @@ class LanguageManager(val context: Context) {
     }
 
     var currentLanguage: Language
-        get() = findLanguageById(prefss.get(prefss.language, languages[0].id))
+        get() = findLanguageById(prefss.get(prefss.language, languages[1].id))
         set(value) = prefss.save(prefss.language, value.id)
 
     fun findLanguageById(id: Int): Language {
@@ -26,7 +26,7 @@ class LanguageManager(val context: Context) {
             if (it.id == id)
                 return it
         }
-        return languages[0]
+        return languages[1]
     }
 
 }
