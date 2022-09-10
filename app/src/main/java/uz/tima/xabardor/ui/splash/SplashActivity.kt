@@ -34,13 +34,13 @@ class SplashActivity : BaseActivity(), SplashView {
 
     override fun onErrorTags(throwable: Throwable) {
         Handler(Looper.getMainLooper()).postDelayed({
-            openMainActivity()
+            // openMainActivity()
         }, 500)
     }
 
     override fun onSuccessTags() {
         Handler(Looper.getMainLooper()).postDelayed({
-            openMainActivity()
+          //  openMainActivity()
         }, 500)
     }
 

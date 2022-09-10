@@ -9,7 +9,7 @@ apply plugin: 'com.google.firebase.crashlytics'
 android {
     signingConfigs {
         playStoreConfig {
-            storeFile file('C:\\Users\\ACER\\StudioProjects\\Xabardor\\Xabardor.jks')
+            storeFile file('/home/Muhammadjon/StudioProjects/Xabardor/Xabardor.jks')
             storePassword 'UzTimXabardor'
             keyAlias 'keyUzTim0'
             keyPassword 'UzTimXabardor'
@@ -20,8 +20,8 @@ android {
         applicationId "uz.tima.xabardor"
         minSdkVersion 23
         targetSdkVersion 33
-        versionCode 8// 4
-        versionName "1.0.8" //
+        versionCode 9// 4
+        versionName "1.0.9" //
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
